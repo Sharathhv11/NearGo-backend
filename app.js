@@ -12,6 +12,9 @@ app.use(express.json())
 //^ router that manages the authentication functionality
 app.use("/api/auth",userRoute);
 
+//^ middleware for serving the static files
+// app.use(express.static("public"));
+
 
 
 //^global error handler

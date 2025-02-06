@@ -1,12 +1,13 @@
 import CustomError from "../utils/customError.js";
 import { verifyJwt } from "../service/JWT.js";
 import userModel from "../models/userModel.js";
+import handelAsyncFunction from "../utils/asyncFunctionHandler.js";
 
 function getError(){
     return new CustomError(401,"Unauthorized to access the Route");
 }
 
-const authorize = (req,res,next) => {
+const authorize = handelAsyncFunction(async(req,res,next) => {
     
     //~ series of test will be examined to verify the given token by the user 
 
@@ -28,7 +29,7 @@ const authorize = (req,res,next) => {
     const decoded = verifyJwt(token);
     
     //^ ensure that the user is in db
-    const user = userModel.findById(decoded.id);
+    const user = await userModel.findById(decoded.id);
 
     //^ no user no access
     if( !user )
@@ -37,6 +38,7 @@ const authorize = (req,res,next) => {
     //^ ensure for the password change after issueing the JWT token
     if (user.passwordChangedAt) {
         const changedTimestamp = Math.floor(user.passwordChangedAt.getTime() / 1000);
+
         if (decoded.iat < changedTimestamp) {
             return next(new CustomError(401,"Password changed. Please log in again."));
         }
@@ -47,10 +49,10 @@ const authorize = (req,res,next) => {
 
 
     //! next() for chaining middleware res.send() for testing purpose
-    // res.send(); 
+    // res.send("yeah"); 
 
     next();
-}
+})
 
 
 export default authorize;
