@@ -10,9 +10,6 @@ const PORT = process.env.PORT || 5050;
 //data base connection call
 connectDB();
 
-app.get("/",(req,res) => {
-    res.send("hello bhai");
-})
 
 app.listen(PORT,() => {
     console.log(`server running on port ${PORT}`);

@@ -1,0 +1,94 @@
+{
+    "data" : [
+        {
+            "title": "The Great Adventure",
+            "author": "John Doe",
+            "genre": ["Adventure", "Fantasy"],
+            "publishedYear": 2010,
+            "price": 19.99,
+            "description": "An epic adventure story.",
+            "coverImage": "https://example.com/image1.jpg"
+        },
+        {
+            "title": "Mystery of the Old House",
+            "author": "Jane Smith",
+            "genre": ["Mystery", "Thriller"],
+            "publishedYear": 2015,
+            "price": 14.99,
+            "description": "A thrilling mystery novel.",
+            "coverImage": "https://example.com/image2.jpg"
+        },
+        {
+            "title": "Science Wonders",
+            "author": "Albert Newton",
+            "genre": ["Science", "Education"],
+            "publishedYear": 2020,
+            "price": 29.99,
+            "description": "A book about scientific discoveries.",
+            "coverImage": "https://example.com/image3.jpg"
+        },
+        {
+            "title": "Romantic Escapades",
+            "author": "Emily Bronte",
+            "genre": ["Romance", "Drama"],
+            "publishedYear": 2018,
+            "price": 9.99,
+            "description": "A romantic drama novel.",
+            "coverImage": "https://example.com/image4.jpg"
+        },
+        {
+            "title": "Historical Events",
+            "author": "George Washington",
+            "genre": ["History", "Non-Fiction"],
+            "publishedYear": 2005,
+            "price": 24.99,
+            "description": "A book about significant historical events.",
+            "coverImage": "https://example.com/image5.jpg"
+        },
+        {
+            "title": "Cooking Made Easy",
+            "author": "Gordon Ramsay",
+            "genre": ["Cooking", "Lifestyle"],
+            "publishedYear": 2012,
+            "price": 34.99,
+            "description": "A cookbook with easy recipes.",
+            "coverImage": "https://example.com/image6.jpg"
+        },
+        {
+            "title": "Tech Innovations",
+            "author": "Elon Musk",
+            "genre": ["Technology", "Business"],
+            "publishedYear": 2019,
+            "price": 39.99,
+            "description": "A book about technological innovations.",
+            "coverImage": "https://example.com/image7.jpg"
+        },
+        {
+            "title": "Fitness Guide",
+            "author": "Jillian Michaels",
+            "genre": ["Health", "Fitness"],
+            "publishedYear": 2017,
+            "price": 15.99,
+            "description": "A guide to staying fit and healthy.",
+            "coverImage": "https://example.com/image8.jpg"
+        },
+        {
+            "title": "Travel the World",
+            "author": "Rick Steves",
+            "genre": ["Travel", "Guide"],
+            "publishedYear": 2016,
+            "price": 22.99,
+            "description": "A travel guide to explore the world.",
+            "coverImage": "https://example.com/image9.jpg"
+        },
+        {
+            "title": "Art of Painting",
+            "author": "Leonardo Da Vinci",
+            "genre": ["Art", "Instructional"],
+            "publishedYear": 2021,
+            "price": 49.99,
+            "description": "A book about the art of painting.",
+            "coverImage": "https://example.com/image10.jpg"
+        }
+    ]
+}
