@@ -41,14 +41,7 @@ const bookSchema = new mongoose.Schema({
         trim: true
     },
     coverImage: {
-        type: [String], 
-        required: [true, "At least one cover image is required."],
-        validate: {
-            validator: function (value) {
-                return value.length >= 1; 
-            },
-            message: "You must upload at least one cover image."
-        }
+        type: [String]       
     },
     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -64,6 +57,11 @@ const bookSchema = new mongoose.Schema({
             },
             message: "Each association must be a non-empty string."
         }
+    },
+    for:{
+        type:String,
+        enum:["selling","bidding"],
+        required:true
     }
 }, {
     timestamps: true 
