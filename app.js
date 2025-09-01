@@ -1,7 +1,6 @@
 import express from "express";
 import userRoute from "./routes/userRoute.js"
 import globalErrorHandler from "./controllers/Error/globalErrorhandler.js";
-import bookRouter from "./routes/bookRoute.js";
 import CustomError from "./utils/customError.js";
 
 const app = express();
@@ -15,9 +14,6 @@ app.use(express.json())
 //^ router that manages the authentication functionality
 app.use("/api/auth",userRoute);
 
-//^ router that manages the book functionality
-app.use("/api/book",bookRouter);
-
 //^ middleware for serving the static files
 // app.use(express.static("public"));
 
@@ -26,8 +22,6 @@ app.use("/api/book",bookRouter);
 app.use("*",(req,res,next)=>{
     next(new CustomError(404,`${req.baseUrl} not found in our server.`))
 })
-
-
 
 //^global error handler
 app.use(globalErrorHandler);

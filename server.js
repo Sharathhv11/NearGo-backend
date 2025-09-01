@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
 import connectDB from "./configure/mongoDB.js"
+
 dotenv.config({
     path:"./config.env"
 });
 import app from "./app.js"
 
-const PORT = process.env.PORT || 5050;
+const PORT = 5050 ;
 
 //data base connection call
 connectDB();
