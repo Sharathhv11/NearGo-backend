@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import connectDB from "./configure/mongoDB.js"
 
 dotenv.config({
-    path:"./config.env"
+    path:"./.env"
 });
 import app from "./app.js"
 
