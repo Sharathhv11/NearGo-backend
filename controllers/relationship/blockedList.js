@@ -1,6 +1,6 @@
 import handelAsyncFunction from "../../utils/asyncFunctionHandler.js";
 import CustomError from "../../utils/customError.js";
-import Relationship from "../../models/relationShipSchema.js";
+import Relationship from "../../models/relationshipSchema.js";
 
 
 const getBlockedRelationships = handelAsyncFunction(

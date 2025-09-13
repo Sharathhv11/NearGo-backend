@@ -3,6 +3,7 @@ import userRoute from "./routes/userRoute.js"
 import relationshipRouter from "./routes/relationshipRoute.js";
 import globalErrorHandler from "./controllers/Error/globalErrorhandler.js";
 import CustomError from "./utils/customError.js";
+import messageRoute from "./routes/messageRoute.js";
 
 const app = express();
 
@@ -16,6 +17,9 @@ app.use(express.json())
 app.use("/api/auth",userRoute);
 
 app.use("/api/relationships",relationshipRouter);
+
+
+app.use("/api/messages",messageRoute);
 
 //^ middleware for serving the static files
 // app.use(express.static("public"));
