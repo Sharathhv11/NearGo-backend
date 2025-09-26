@@ -1,5 +1,5 @@
 import developmentError from "./developmentError.js"
-
+import productionError from "./production.js";
 
 const globalErrorHandler = (error, req, res, next) => {
 
@@ -11,6 +11,8 @@ const globalErrorHandler = (error, req, res, next) => {
     if( process.env.NODE_ENV === "DEV"){
         developmentError(error,res);
         return;
+    }else{
+        productionError(error,res);
     }
 
     
