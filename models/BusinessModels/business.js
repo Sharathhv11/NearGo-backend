@@ -39,7 +39,7 @@ const phoneSchema = new Schema({
   phone: {
     countryCode: {
       type: String,
-      required: true, // e.g. "+91"
+      required: [true,"Country code is required ex:india +91."], // e.g. "+91"
     },
     number: {
       type: String,
