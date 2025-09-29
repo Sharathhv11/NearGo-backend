@@ -1,38 +1,36 @@
 {
-  "workingHours": {
-    "weekdays": { "open": "09:00", "close": "18:00" },
-    "weekends": { "open": "09:00", "close": "18:00" }
-  },
-  "media": { "images": [], "videos": [] },
-  "verification": { "isVerified": false },
-  "_id": "68d6b06bf9fea686fa8bd77b",
-  "businessName": "Sharma Electric Works",
-  "owner": {
-    "_id": "68bbe6517c5ce1b8cd69eb80",
-    "username": "sharath123",
-    "email": "sharath@example.com",
-    "profilePicture": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-  },
-  "description": "Electrical services including wiring, repairs, and installations.",
-  "email": "sharma.electric@gmail.com",
-  "location": {
-    "coordinates": { "type": "Point", "coordinates": [13.001437, 76.074041] },
-    "country": "India",
-    "state": "Karnataka",
-    "district": "Hassan",
-    "city": "Hassan",
-    "area": "Town Center",
-    "pincode": "573201",
-    "_id": "68d6b06bf9fea686fa8bd77c"
-  },
-  "phoneNo": [
-    {
-      "phone": { "countryCode": "+91", "number": "9876543210" },
-      "_id": "68d6b06bf9fea686fa8bd77d"
-    }
-  ],
-  "offers": [],
-  "status": "Closed",
-  "categories": ["Electrician"],
-  "__v": 0
+  "status": "success",
+  "data": {
+    "workingHours": {
+      "weekdays": { "open": "09:00", "close": "18:00" },
+      "weekends": { "open": "09:00", "close": "18:00" }
+    },
+    "media": { "images": [], "videos": [] },
+    "verification": { "isVerified": false },
+    "_id": "68d6b06bf9fea686fa8bd77b",
+    "businessName": "Sharma Electric Works",
+    "owner": "68bbe6517c5ce1b8cd69eb80",
+    "description": "Electrical services including wiring, repairs, and installations.",
+    "email": "sharma.electric@gmail.com",
+    "location": {
+      "coordinates": { "type": "Point", "coordinates": [12.997786, 76.075485] },
+      "country": "India",
+      "state": "Karnataka",
+      "district": "Hassan",
+      "city": "Hassan",
+      "area": "Vijaynagar 2nd stage,Hassan 573201",
+      "pincode": "573201",
+      "_id": "68d6b06bf9fea686fa8bd77c"
+    },
+    "phoneNo": [
+      {
+        "phone": { "countryCode": "+91", "number": "9876543210" },
+        "_id": "68d6b06bf9fea686fa8bd77d"
+      }
+    ],
+    "offers": [],
+    "status": "Closed",
+    "categories": ["Electrician"],
+    "__v": 0
+  }
 }

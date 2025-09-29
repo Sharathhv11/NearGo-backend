@@ -91,6 +91,17 @@ const findBusiness = handelAsyncFunction(async (req, res, next) => {
 
   const { searchType } = req.query;
 
+  //& it operates in 3rd way /:businessID? which is optional but can be used to fetch the specific business details
+  const { businessID } = req.params;
+  if( businessID ){
+    const businessData = await businessModel.findById(businessID);
+    res.status(200).send({
+        status:"success",
+        data : businessData
+    });
+    return; 
+  }
+
   if (searchType === "LocationBased") {
     const response = await locationBased(req, next);
     res.status(200).send({
