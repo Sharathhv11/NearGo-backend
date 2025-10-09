@@ -8,18 +8,18 @@ const reviewSchema = new Schema(
     BusinessID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Business", // The service being reviewed
-      required: true,
+      required: [true,"business id is required for registering review."],
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Who wrote the review
-      required: true,
+      required: [true,"user id is required for registering review."],
     },
     rating: {
       type: Number,
       min: 1,
       max: 5,
-      required: true,
+      required: [true,"Rating must be provided between 1 to 5."],
     },
     comment: {
       type: String,

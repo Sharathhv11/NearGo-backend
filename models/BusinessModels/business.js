@@ -128,6 +128,16 @@ const businessSchema = new Schema({
     instagram: String,
     twitter: String,
   },
+  rating:{
+      sumOfReview : {
+        type : Number,
+        default : 0
+      },
+      totalReview : {
+        type : Number,
+        default : 0
+      }
+  }
 });
 
 
