@@ -16,6 +16,11 @@ import {
  } from "./../controllers/Business/reviewController.js"
 
 
+//! importing offer controllers
+
+import createOffer from "../controllers/Business/offerController/createOffer.js";
+
+
 
 const businessRouter = express.Router();
 
@@ -35,6 +40,10 @@ businessRouter.patch("/:businessId/reviews/:reviewId",authorize,updateReview);
 businessRouter.delete("/:businessId/reviews/:reviewId",authorize,deleteReview);
 
 businessRouter.get ("/:businessId/reviews",authorize,getReviews);
+
+//! routes for handling the offer of the business
+
+businessRouter.post("/:businessId/offers",authorize,createOffer);
 
 
 export default businessRouter; 
