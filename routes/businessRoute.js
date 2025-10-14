@@ -19,6 +19,7 @@ import {
 //! importing offer controllers
 
 import createOffer from "../controllers/Business/offerController/createOffer.js";
+import viewOffer from "../controllers/Business/offerController/viewOffer.js";
 
 
 
@@ -44,6 +45,8 @@ businessRouter.get ("/:businessId/reviews",authorize,getReviews);
 //! routes for handling the offer of the business
 
 businessRouter.post("/:businessId/offers",authorize,createOffer);
+
+businessRouter.get("/:businessId/offers",authorize,viewOffer);
 
 
 export default businessRouter; 
