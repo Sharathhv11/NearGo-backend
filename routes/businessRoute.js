@@ -20,6 +20,7 @@ import {
 
 import createOffer from "../controllers/Business/offerController/createOffer.js";
 import viewOffer from "../controllers/Business/offerController/viewOffer.js";
+import deleteOffer from "../controllers/Business/offerController/deleteOffer.js";
 
 
 
@@ -47,6 +48,8 @@ businessRouter.get ("/:businessId/reviews",authorize,getReviews);
 businessRouter.post("/:businessId/offers",authorize,createOffer);
 
 businessRouter.get("/:businessId/offers",authorize,viewOffer);
+
+businessRouter.delete("/:businessId/offers/:offerId",authorize,deleteOffer);
 
 
 export default businessRouter; 
