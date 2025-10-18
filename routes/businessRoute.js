@@ -21,7 +21,7 @@ import {
 import createOffer from "../controllers/Business/offerController/createOffer.js";
 import viewOffer from "../controllers/Business/offerController/viewOffer.js";
 import deleteOffer from "../controllers/Business/offerController/deleteOffer.js";
-
+import updateOffer from "../controllers/Business/offerController/updateOffer.js";
 
 
 const businessRouter = express.Router();
@@ -50,6 +50,8 @@ businessRouter.post("/:businessId/offers",authorize,createOffer);
 businessRouter.get("/:businessId/offers",authorize,viewOffer);
 
 businessRouter.delete("/:businessId/offers/:offerId",authorize,deleteOffer);
+
+businessRouter.patch("/:businessId/offers/:offerId",authorize,updateOffer);
 
 
 export default businessRouter; 
