@@ -2,9 +2,11 @@ import businessModel from "../../../models/BusinessModels/business.js";
 import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
 import tweetModel from "../../../models/tweet/tweetModel.js";
 import CustomError from "../../../utils/customError.js";
+import uploadToCloud from "../../../utils/uploadFiles.js";
 
 
 const postTweet = handelAsyncFunction(async function(req,res,next){
+
     const { businessId } = req.params;
 
     if( !businessId ){
@@ -18,9 +20,12 @@ const postTweet = handelAsyncFunction(async function(req,res,next){
     }
 
     const {tweet} = req.body;
+
     if (!tweet || tweet.trim().length === 0) {
         return next(new CustomError(400, "Tweet content is required."));
     }
+
+    const media = await uploadToCloud(req.files);
 
     const validFields = ["tweet","hashtags","visibility"];
     for( let key in req.body ){
@@ -28,7 +33,7 @@ const postTweet = handelAsyncFunction(async function(req,res,next){
     }
 
     req.body.postedBy = businessId;
-
+    req.body.media = media;
     const tweetDocument = await tweetModel.create(req.body);
 
     res.status(201).send({

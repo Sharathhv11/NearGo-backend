@@ -1,5 +1,6 @@
 import express from "express";
 import authorize from "../controllers/authorization.js";
+import upload from "../utils/multer.js";
 
 //! importing business controllers 
 import createBusiness from "../controllers/Business/createBusiness.js";
@@ -58,6 +59,6 @@ businessRouter.patch("/:businessId/offers/:offerId",authorize,updateOffer);
 
 //!business tweets for handling the tweet structure
 
-businessRouter.post("/:businessId/tweet",authorize,postTweet);
+businessRouter.post("/:businessId/tweet",authorize,upload.array("media",10),postTweet);
 
 export default businessRouter; 
