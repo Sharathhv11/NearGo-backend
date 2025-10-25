@@ -27,6 +27,7 @@ import updateOffer from "../controllers/Business/offerController/updateOffer.js"
 
 //! importing tweet controllers
 import postTweet from "../controllers/Business/tweet/postTweet.js";
+import deleteTweet from "../controllers/Business/tweet/deleteTweet.js";
 
 const businessRouter = express.Router();
 
@@ -59,6 +60,9 @@ businessRouter.patch("/:businessId/offers/:offerId",authorize,updateOffer);
 
 //!business tweets for handling the tweet structure
 
-businessRouter.post("/:businessId/tweet",authorize,upload.array("media",10),postTweet);
+businessRouter.post("/:businessId/tweets",authorize,upload.array("media",10),postTweet);
+
+
+businessRouter.delete("/:businessId/tweets/:tweetId",authorize,deleteTweet);
 
 export default businessRouter; 
