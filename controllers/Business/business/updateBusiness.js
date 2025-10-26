@@ -1,6 +1,6 @@
-import businessModel from "../../models/BusinessModels/business.js";
-import handleAsyncFunction from "../../utils/asyncFunctionHandler.js";
-import CustomError from "../../utils/customError.js";
+import businessModel from "../../../models/BusinessModels/business.js";
+import handleAsyncFunction from "../../../utils/asyncFunctionHandler.js";
+import CustomError from "../../../utils/customError.js";
 
 const updateBusiness = handleAsyncFunction(async (req, res, next) => {
     //^ This controller allows the user to update allowed fields of a business

@@ -1,5 +1,5 @@
-import businessModel from "./../../models/BusinessModels/business.js"
-import handelAsyncFunction from "../../utils/asyncFunctionHandler.js";
+import businessModel from "./../../../models/BusinessModels/business.js"
+import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
 
 const createBusiness = handelAsyncFunction( async (req,res,next)=>{
     //^ inserting the business information into database 

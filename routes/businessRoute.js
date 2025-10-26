@@ -3,9 +3,9 @@ import authorize from "../controllers/authorization.js";
 import upload from "../utils/multer.js";
 
 //! importing business controllers 
-import createBusiness from "../controllers/Business/createBusiness.js";
-import findBusiness from "../controllers/Business/findBusiness.js";
-import updateBusiness from "../controllers/Business/updateBusiness.js";
+import createBusiness from "../controllers/Business/business/createBusiness.js";
+import findBusiness from "../controllers/Business/business/findBusiness.js";
+import updateBusiness from "../controllers/Business/business/updateBusiness.js";
 
 
 //!importing review controllers

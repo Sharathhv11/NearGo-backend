@@ -1,6 +1,6 @@
-import CustomError from "../../utils/customError.js";
-import businessModel from "../../models/BusinessModels/business.js";
-import handelAsyncFunction from "../../utils/asyncFunctionHandler.js";
+import CustomError from "../../../utils/customError.js";
+import businessModel from "../../../models/BusinessModels/business.js";
+import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
 
 async function locationBased(req, next) {
   const { longitude, latitude, distance, query } = req.body;
