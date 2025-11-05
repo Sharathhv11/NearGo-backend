@@ -24,4 +24,8 @@ const followersSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("Followers", followersSchema);
+const followersModel =  model("Followers", followersSchema);
+
+export default followersModel;
+
+
