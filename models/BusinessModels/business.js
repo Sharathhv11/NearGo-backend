@@ -67,7 +67,10 @@ const businessSchema = new Schema({
       ref:"User",
       required:true
   },
-
+  profile:{
+    type:String,
+    default:null
+  },
   description: {
     type: String,
     required: [true, "Description is required"],
