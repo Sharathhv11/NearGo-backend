@@ -116,9 +116,7 @@ const businessSchema = new Schema({
     weekends: { open: String, close: String }
   },
   media: {
-    logo: String,
-    images: [String],
-    videos: [String],
+    type:[String]
   },
   verification: {
     isVerified: { type: Boolean, default: false },

@@ -82,4 +82,8 @@ businessRouter.delete("/:businessId/tweets/:tweetId",authorize,deleteTweet);
 businessRouter.post("/:businessId/follow",authorize,following);
 businessRouter.delete("/:businessId/follow",authorize,unfollow);
 
+//! businesss media handler 
+import uploadMedia from "../controllers/Business/business/businessMedia/upload.js";
+businessRouter.post("/:businessId/media",authorize,upload.array("media",10),uploadMedia);
+
 export default businessRouter; 
