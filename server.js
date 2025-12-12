@@ -2,7 +2,7 @@ import "dotenv/config"
 import connectDB from "./configure/mongoDB.js"
 import app from "./app.js"
 
-const PORT = 5050 ;
+const PORT = process.env.PORT ;
 
 
 
