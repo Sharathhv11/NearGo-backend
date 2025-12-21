@@ -6,7 +6,6 @@ const userScheme = mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
       trim: true,
       minlength: 1,
       maxlength: 50,
@@ -14,7 +13,6 @@ const userScheme = mongoose.Schema(
 
     username: {
       type: String,
-      required: true,
       unique: true,
       minlength: 1,
       maxlength: 50,
@@ -44,7 +42,6 @@ const userScheme = mongoose.Schema(
 
     interest: {
       type: [String],
-      required: [true, "Interests are required."],
       enum: [
         "Clothing Store",
         "Electronics",
@@ -105,7 +102,6 @@ const userScheme = mongoose.Schema(
 
     phone_no: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
       minlength: 10,
@@ -159,6 +155,17 @@ const userScheme = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userScheme.index(
+  { username: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      username: { $exists: true, $ne: null }
+    }
+  }
+);
+
 
 // 🔒 Hash password before saving
 userScheme.pre("save", async function (next) {

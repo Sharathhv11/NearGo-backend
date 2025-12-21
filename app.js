@@ -4,8 +4,20 @@ import globalErrorHandler from "./controllers/Error/globalErrorhandler.js";
 import CustomError from "./utils/customError.js";
 import businessRouter from "./routes/businessRoute.js";
 import userProfileRoute from "./routes/userProfileRoutes.js";
+import cors from "cors";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.options("*", cors());
 
 
 

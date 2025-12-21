@@ -39,7 +39,7 @@ const createUser = handelAsyncFunction( async (req,res,next) => {
             }
         );
     }else{
-         //*user not exists create the record and send the verification email to the user
+         //*user not exists create the record and send the verification email to the user 
         const data = await userModel.create({
             ...req.body,
             tokenExpires:expireTime,
@@ -47,6 +47,8 @@ const createUser = handelAsyncFunction( async (req,res,next) => {
             token:verificationToken  
         });
     }
+
+    
 
     //^code for generating the link for validation
     const link = `${req.protocol}://${req.get('host')}/api/auth/verify/${verificationToken}`;
@@ -66,7 +68,7 @@ const createUser = handelAsyncFunction( async (req,res,next) => {
     res.status(201).send({
         status:"success",
         messgae:`Email a sent your ${email} address. Please verify your email`
-    })
+    }) 
 } ); 
 
 
