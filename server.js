@@ -2,12 +2,7 @@ import "dotenv/config"
 import connectDB from "./configure/mongoDB.js"
 import app from "./app.js"
 
-
-
-
-
-
-const PORT = 5050 ;
+const PORT = process.env.PORT ;
 
 
 
@@ -16,6 +11,6 @@ connectDB();
 
 
 
-app.listen(PORT,() => {
+app.listen(PORT,"0.0.0.0",() => {
     console.log(`server running on port ${PORT}`);
 })
