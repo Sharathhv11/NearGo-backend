@@ -10,14 +10,33 @@ const app = express();
 
 app.set("trust proxy", 1);
 
+const allowedOrigins = [
+  process.env.FRONTEND,        // https://sharath.vercel.app
+  "http://localhost:5173",     // Vite
+  "http://localhost:3000",     // CRA (just in case)
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND,
+    origin: function (origin, callback) {
+      // allow Postman / server-to-server
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.error("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+app.options("*", cors());
+
 
 
 
