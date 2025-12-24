@@ -13,7 +13,6 @@ const userScheme = mongoose.Schema(
 
     username: {
       type: String,
-      unique: true,
       minlength: 1,
       maxlength: 50,
     },
@@ -116,22 +115,22 @@ const userScheme = mongoose.Schema(
 
     verified: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     token: {
       type: String,
-      default: null,
+      default: null
     },
 
     tokenExpires: {
       type: Date,
-      default: null,
+      default: null
     },
 
     passwordChangedAt: {
       type: Date,
-      default: null,
+      default: null
     },
 
     role: {
@@ -167,7 +166,7 @@ userScheme.index(
 );
 
 
-// 🔒 Hash password before saving
+// 🔒 Hash password before saving 
 userScheme.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
