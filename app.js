@@ -43,6 +43,10 @@ app.use("/api/user",userProfileRoute);
 //^ middleware for serving the static files
 // app.use(express.static("public"));
 
+//^this route is used to wake up the render server
+app.get("/health",(req,res)=>{
+  res.status(200).json({status:"success",message:"Server is up and running"})
+})
 
 //^ 404 route middleware
 app.use("*",(req,res,next)=>{

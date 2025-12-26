@@ -16,7 +16,7 @@ const getResetPage = (token) => {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        height: 100dvh;
         margin: 0;
     }
 
@@ -148,22 +148,21 @@ const getResetPage = (token) => {
     </html>`;
 };
 const passwordResetClient = handelAsyncFunction(async (req, res, next) => {
+  //^ first step is to extract the token and verify it exists in out databse
 
-    //^ first step is to extract the token and verify it exists in out databse
+  const { token } = req.params;
 
-    const {token} = req.params;
+  const user = await userModel.findOne({
+    token,
+    tokenExpires: { $gt: Date.now() },
+  });
 
-    const user = await userModel.findOne({
-        token ,
-        tokenExpires : { $gt : Date.now()}
-    })
+  // console.log(user);
 
-    // console.log(user);
-    
-    //^ is link has expired sending the expired link page
-    if( !user ){
-        return res.send(
-            `<!DOCTYPE html>
+  //^ is link has expired sending the expired link page
+  if (!user) {
+    return res.send(
+      `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -176,7 +175,7 @@ const passwordResetClient = handelAsyncFunction(async (req, res, next) => {
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        height: 100vh;
+                        height: 100dvh;
                         margin: 0;
                     }
                     .message {
@@ -192,47 +191,48 @@ const passwordResetClient = handelAsyncFunction(async (req, res, next) => {
                 </div>
             </body>
             </html>
-        `)
-    }
+        `
+    );
+  }
 
-    //? if not send the reset password form for the user
-    res.send(getResetPage(token));
-   
+  //? if not send the reset password form for the user
+  res.send(getResetPage(token));
 });
 
-const passwordResetServer = handelAsyncFunction(async(req, res,next) => {
-    
-    const {token} = req.params;
-    
-    //^ ensure that link is valid by finding token on db
-    const user = await userModel.findOne({
-        token ,
-        tokenExpires : { $gt : Date.now()}
-    });
+const passwordResetServer = handelAsyncFunction(async (req, res, next) => {
+  const { token } = req.params;
 
-    //^ if link has expired send the error of expired link 
-    if( !user ){
-        return next(new CustomError(401,"Link has expired. Please try again before within 10mins of link generation."));   
-    }
+  //^ ensure that link is valid by finding token on db
+  const user = await userModel.findOne({
+    token,
+    tokenExpires: { $gt: Date.now() },
+  });
 
-    //~extract the password
-    const {password} = req.body;
+  //^ if link has expired send the error of expired link
+  if (!user) {
+    return next(
+      new CustomError(
+        401,
+        "Link has expired. Please try again before within 10mins of link generation."
+      )
+    );
+  }
 
-    //^modify the reset related feilds on db
-    user.password = password;
-    user.token = null;
-    user.tokenExpires = null;
+  //~extract the password
+  const { password } = req.body;
 
-    user.save();
+  //^modify the reset related feilds on db
+  user.password = password;
+  user.token = null;
+  user.tokenExpires = null;
 
-    //? successfully reseted the password 
-    res.status(201).send( {
-        status:"Sucess",
-        message:"Passowrd changed successfully"
-    })
+  user.save();
 
-    
-    
+  //? successfully reseted the password
+  res.status(201).send({
+    status: "Sucess",
+    message: "Passowrd changed successfully",
+  });
 });
 
 export { passwordResetClient, passwordResetServer };

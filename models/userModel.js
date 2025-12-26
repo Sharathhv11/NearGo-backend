@@ -166,7 +166,7 @@ userScheme.index(
 );
 
 
-// 🔒 Hash password before saving 
+//  Hash password before saving 
 userScheme.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -175,7 +175,7 @@ userScheme.pre("save", async function (next) {
   next();
 });
 
-// 🔑 Compare password method
+//  Compare password method
 userScheme.methods.comparePassword = async function (userPassword) {
   return await bcrypt.compare(userPassword, this.password);
 };
