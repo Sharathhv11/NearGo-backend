@@ -2,15 +2,13 @@ import nodemailer from "nodemailer";
 
 
 
-const transporter  = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    secure: false,
-    auth: {
-      user: "330131c7d98924",
-      pass: "24144cdc4b7a93"
-    }
-  });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,       
+    pass: process.env.EMAILPASS,     
+  },
+});
 
 
 async function mail(name,link,toEmail){

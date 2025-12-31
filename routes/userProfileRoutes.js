@@ -10,7 +10,7 @@ import updateUserProfile from "../controllers/Users/updateProfile.js";
 
 const userProfileRoute =  Router();
 
-userProfileRoute.patch("/:userId/",authorize, upload.single('profile'),updateUserProfile);
+userProfileRoute.patch("/:userId",authorize, upload.single('profilePicture'),updateUserProfile);
 
 userProfileRoute.get("/",authorize, getUserInfo);
 

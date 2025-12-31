@@ -14,6 +14,9 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
   const userId = req.user._id;
   const updates = req.body;
 
+  
+  
+
   //Allowed profile fields
   const updatableFields = [
     "name",
@@ -47,7 +50,7 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
         )
       );
     }
-
+    
     //Remove old image if not default
     if (user.profilePicture && user.profilePicture !== DEFAULT_DP) {
       const cleaned = await cleanUpCloud([user.profilePicture]);
@@ -56,6 +59,8 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
           new CustomError(500, "Failed to remove old profile image.")
         );
       }
+
+      
     }
 
     //Upload new image
