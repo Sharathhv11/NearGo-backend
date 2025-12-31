@@ -56,14 +56,10 @@ const createUser = handelAsyncFunction( async (req,res,next) => {
 
 
     //^this part of the mails the verification link to the users mail address 
-    const mailerRes = await mail(req.body.name,link,email,next);
+    mail(req.body.name,link,email,next);
 
 
-    if(mailerRes){
-        return next(new CustomError(500,"our email server is down!. Please try again later."));
-    }
-
-
+   
     //*if everything goes smooth send the 201 resource created successfully 
     res.status(201).send({
         status:"success",
