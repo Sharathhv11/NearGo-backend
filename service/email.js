@@ -1,225 +1,140 @@
 import nodemailer from "nodemailer";
 
-
-
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false, // MUST be false for port 587
   auth: {
-    user: process.env.EMAIL,       
-    pass: process.env.EMAILPASS,     
+    user: "9f1035001@smtp-brevo.com",
+    pass: process.env.BREVO_SMTP_KEY, // Brevo SMTP key
   },
 });
 
+async function mail(name, link, toEmail) {
+  try {
+    await transporter.sendMail({
+      from: '"BookReseller Support" <batman11login@gmail.com>',
+      to: toEmail,
+      subject: "Verify Your Email - BookReseller",
 
-async function mail(name,link,toEmail){
+      text: `Hello ${name},
 
+Thank you for registering with BookReseller!
 
-    try {
-        const info = await transporter.sendMail({
-            from: '"BookReslling Support" <no-reply@ciniflex.com>', // Sender Name & Email
-            to: toEmail, // User's Email
-            subject: "Verify Your Email - bookreseller", // Email Subject
-            text: `Hello ${name},\n\nThank you for registering on our app!\n\nTo complete your registration, please verify your email by clicking the link below:\n\n\n\nIf you didn't sign up for bookReseller, please ignore this email.\n\nBest regards,\bookReseller Team`, // Plain text version
-            html: `
-            <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Email Verification</title>
-        <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f4f9;
-            }
-            .container {
-                width: 100%;
-                max-width: 600px;
-                margin: 20px auto;
-                background-color: #fff;
-                border-radius: 8px;
-                padding: 30px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .header h1 {
-                font-size: 28px;
-                color: #333;
-            }
-            .message {
-                font-size: 16px;
-                color: #555;
-                line-height: 1.6;
-                margin-bottom: 20px;
-            }
-            .button {
-                display: inline-block;
-                padding: 12px 25px;
-                font-size: 16px;
-                color: #fff;
-                background-color: #4CAF50;
-                text-decoration: none;
-                border-radius: 5px;
-                text-align: center;
-                transition: background-color 0.3s ease;
-            }
-            .button:hover {
-                background-color: #45a049;
-            }
-            .footer {
-                font-size: 12px;
-                color: #777;
-                text-align: center;
-                margin-top: 30px;
-            }
-            .footer a {
-                color: #777;
-                text-decoration: none;
-            }
-            .footer a:hover {
-                color: #333;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>Welcome to Our Service, ${name}!</h1>
-            </div>
-            <div class="message">
-                <p>We're excited to have you on board! To complete your registration, please verify your email address by clicking the button below.</p>
-                <p>If you did not sign up for an account, please ignore this email.</p>
-            </div>
-            <div style="text-align: center;">
-                <a href="${link}" class="button">Verify Email Address</a>
-            </div>
-            <div class="footer">
-                <p>If you have any questions or issues, feel free to <a href="mailto:support@yourcompany.com">contact us</a>.</p>
-                <p>Thank you for choosing us!</p>
-            </div>
-        </div>
-    </body>
-    </html>
-            `
-    
-        });
-        
-    } catch (error) {
-        return error;
-    }
+To complete your registration, please verify your email by clicking the link below:
 
+${link}
+
+If you did not sign up for BookReseller, please ignore this email.
+
+Best regards,
+BookReseller Team
+`,
+
+      html: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px;">
+  <div style="max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:8px;">
+    <h2 style="text-align:center;">Welcome to BookReseller, ${name}!</h2>
+
+    <p>
+      Thank you for signing up. Please verify your email address by clicking the button below.
+    </p>
+
+    <div style="text-align:center;margin:30px 0;">
+      <a href="${link}" 
+         style="background:#4CAF50;color:#fff;padding:12px 25px;
+                text-decoration:none;border-radius:5px;display:inline-block;">
+        Verify Email Address
+      </a>
+    </div>
+
+    <p>If you didn’t create a BookReseller account, you can safely ignore this email.</p>
+
+    <p style="margin-top:30px;font-size:12px;color:#777;text-align:center;">
+      © BookReseller Team
+    </p>
+  </div>
+</body>
+</html>
+`,
+    });
+  } catch (error) {
+    return error;
+  }
 }
 
 async function mailForgotPassword(name, link, toEmail) {
-    try {
-        const info = await transporter.sendMail({
-            from: '"ReBook Support" <no-reply@rebook.com>', // Sender Name & Email
-            to: toEmail, // User's Email
-            subject: "Reset Your Password - ReBook", // Email Subject
-            text: `Hello ${name},\n\nWe received a request to reset your password for your ReBook account.\n\nTo reset your password, please click the link below:\n\n${link}\n\nThis link is valid for 15 minutes. If you did not request this, please ignore this email.\n\nBest regards,\nReBook Team`, // Plain text version
-            html: `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Reset Your Password</title>
-                <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f4f4f9;
-                    }
-                    .container {
-                        width: 100%;
-                        max-width: 600px;
-                        margin: 20px auto;
-                        background-color: #fff;
-                        border-radius: 8px;
-                        padding: 30px;
-                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    }
-                    .header {
-                        text-align: center;
-                        margin-bottom: 20px;
-                    }
-                    .header h1 {
-                        font-size: 24px;
-                        color: #333;
-                    }
-                    .message {
-                        font-size: 16px;
-                        color: #555;
-                        line-height: 1.6;
-                        margin-bottom: 20px;
-                    }
-                    .button {
-                        display: inline-block;
-                        padding: 12px 25px;
-                        font-size: 16px;
-                        color: #fff;
-                        background-color: #007BFF;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        text-align: center;
-                        transition: background-color 0.3s ease;
-                    }
-                    .button:hover {
-                        background-color: #0056b3;
-                    }
-                    .footer {
-                        font-size: 12px;
-                        color: #777;
-                        text-align: center;
-                        margin-top: 30px;
-                    }
-                    .footer a {
-                        color: #777;
-                        text-decoration: none;
-                    }
-                    .footer a:hover {
-                        color: #333;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>Password Reset Request</h1>
-                    </div>
-                    <div class="message">
-                        <p>Hello <strong>${name}</strong>,</p>
-                        <p>We received a request to reset your password for your <strong>ReBook</strong> account.</p>
-                        <p>If you requested this change, click the button below to set a new password.</p>
-                        <p>If you did not request this, you can ignore this email.</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <a href="${link}" class="button">🔑 Reset Password</a>
-                    </div>
-                    <div class="footer">
-                        <p>This link is valid for <strong>10 minutes</strong>.</p>
-                        <p>If you have any questions, feel free to <a href="mailto:support@rebook.com">contact us</a>.</p>
-                        <p>Best regards,</p>
-                        <p><strong>📚 ReBook Team</strong></p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            `
-        });
-    } catch (error) {
-        return error;
-    }
+  try {
+    await transporter.sendMail({
+      from: '"BookReseller Support" <batman11login@gmail.com>',
+      to: toEmail,
+      subject: "Reset Your Password - ReBook",
+
+      text: `Hello ${name},
+
+We received a request to reset the password for your ReBook account.
+
+You can reset your password using the link below:
+${link}
+
+This link is valid for 10 minutes.
+
+If you did not request a password reset, please ignore this email.
+
+Best regards,
+ReBook Team
+`,
+
+      html: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Reset</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px;">
+  <div style="max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:8px;">
+    <h2 style="text-align:center;">Password Reset Request</h2>
+
+    <p>Hello <strong>${name}</strong>,</p>
+
+    <p>
+      We received a request to reset your ReBook account password.
+      Click the button below to proceed.
+    </p>
+
+    <div style="text-align:center;margin:30px 0;">
+      <a href="${link}"
+         style="background:#007BFF;color:#fff;padding:12px 25px;
+                text-decoration:none;border-radius:5px;display:inline-block;">
+        Reset Password
+      </a>
+    </div>
+
+    <p>This link is valid for <strong>10 minutes</strong>.</p>
+
+    <p>If you did not request this, you can safely ignore this email.</p>
+
+    <p style="margin-top:30px;font-size:12px;color:#777;text-align:center;">
+      © ReBook Team
+    </p>
+  </div>
+</body>
+</html>
+`,
+    });
+  } catch (error) {
+    return error;
+  }
 }
 
-
 export default mail;
-export {
-    mailForgotPassword
-};
+export { mailForgotPassword };
