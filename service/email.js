@@ -1,23 +1,28 @@
-import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false, // MUST be false for port 587
-  auth: {
-    user: "9f1035001@smtp-brevo.com",
-    pass: process.env.BREVO_SMTP_KEY, // Brevo SMTP key
-  },
-});
+//  Configure Brevo client
+const client = SibApiV3Sdk.ApiClient.instance;
+client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 
+const transactionalEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
+
+// 📧 VERIFIED sender (must match Brevo sender)
+const SENDER = {
+  email: "batman11login@gmail.com",
+  name: "BizzSpot Support",
+};
+
+// =======================
+// EMAIL VERIFICATION MAIL
+// =======================
 async function mail(name, link, toEmail) {
   try {
-    await transporter.sendMail({
-      from: '"BookReseller Support" <batman11login@gmail.com>',
-      to: toEmail,
+    await transactionalEmailApi.sendTransacEmail({
+      sender: SENDER,
+      to: [{ email: toEmail }],   
       subject: "Verify Your Email - BookReseller",
 
-      text: `Hello ${name},
+      textContent: `Hello ${name},
 
 Thank you for registering with BookReseller!
 
@@ -31,7 +36,7 @@ Best regards,
 BookReseller Team
 `,
 
-      html: `
+      htmlContent: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,18 +71,22 @@ BookReseller Team
 `,
     });
   } catch (error) {
+    console.error("Brevo verification email failed:", error);
     return error;
   }
 }
 
+// =======================
+// FORGOT PASSWORD MAIL
+// =======================
 async function mailForgotPassword(name, link, toEmail) {
   try {
-    await transporter.sendMail({
-      from: '"BookReseller Support" <batman11login@gmail.com>',
-      to: toEmail,
+    await transactionalEmailApi.sendTransacEmail({
+      sender: SENDER,
+      to: [{ email: toEmail }],
       subject: "Reset Your Password - ReBook",
 
-      text: `Hello ${name},
+      textContent: `Hello ${name},
 
 We received a request to reset the password for your ReBook account.
 
@@ -92,7 +101,7 @@ Best regards,
 ReBook Team
 `,
 
-      html: `
+      htmlContent: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,6 +141,7 @@ ReBook Team
 `,
     });
   } catch (error) {
+    console.error("Brevo forgot-password email failed:", error);
     return error;
   }
 }
