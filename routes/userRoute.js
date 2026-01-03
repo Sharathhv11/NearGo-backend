@@ -6,6 +6,7 @@ import authorize from "../controllers/authorization.js";
 import { forgotPassword } from "../controllers/authentication/password.js";
 import { passwordResetClient, passwordResetServer } from "../controllers/authentication/resetPassword.js";
 import { rateLimit } from 'express-rate-limit'
+import googleSignIn from "../controllers/authentication/googleOauth2.js";
 
 const limiter = rateLimit({
     windowMs: 10 * 60 * 1000,
@@ -26,6 +27,7 @@ userRouter.post("/login",login);
 userRouter.post("/forgot-password",limiter,forgotPassword);
 userRouter.get("/reset-password/:token",passwordResetClient);
 userRouter.post("/reset-password/:token",limiter,passwordResetServer);
+userRouter.post("/google",googleSignIn);
 
 
 

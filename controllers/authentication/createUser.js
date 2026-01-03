@@ -27,7 +27,7 @@ const createUser = handelAsyncFunction( async (req,res,next) => {
     const verificationToken = generateToken();
     const expireTime = Date.now() + 10 * 60 * 1000;
 
-    //*user exists and not verified his accound just update the feilds with new one and send the verification mail
+    //*user exists and not verified his account just update the feilds with new one and send the verification mail
     if(userExists && !userExists.verified){
         await userModel.findOneAndUpdate(
             { email: userExists.email },
@@ -44,7 +44,7 @@ const createUser = handelAsyncFunction( async (req,res,next) => {
             ...req.body,
             tokenExpires:expireTime,
             verified:false,
-            token:verificationToken  
+            token:verificationToken,
         });
     }
 

@@ -75,6 +75,9 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
     );
   }
 
+
+  filteredUpdate.profileCompleted = true;
+
   //Update user
   const updatedUser = await userModel.findByIdAndUpdate(
     userId,

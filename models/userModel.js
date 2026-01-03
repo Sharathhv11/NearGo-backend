@@ -33,9 +33,9 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: true,
       minlength: 8,
       maxlength: 100,
+      default: null,
       select: false,
     },
 
@@ -141,6 +141,18 @@ const userSchema = new mongoose.Schema(
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
     },
 
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      required: true,
+      default: "local",
+    },
+
+    profileCompleted:{
+      type:Boolean,
+      default :false
+    },
+
     notifications: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -155,7 +167,7 @@ const userSchema = new mongoose.Schema(
  * Hash password before save
  */
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.password || !this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(
     this.password,
@@ -170,6 +182,7 @@ userSchema.pre("save", async function (next) {
  * Compare password
  */
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if(!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 

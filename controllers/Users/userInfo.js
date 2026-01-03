@@ -1,20 +1,21 @@
 import handelAsyncFunction from "../../utils/asyncFunctionHandler.js";
 
 const getUserInfo = handelAsyncFunction(async (req, res, next) => {
-    
   const user = req.user;
 
-  
   const filteredUser = {
     id: user._id,
     email: user.email,
-    username: user.username ?? null,
     name: user.name ?? null,
+    username: user.username ?? null,
     phone_no: user.phone_no ?? null,
-    interest: user.interest,
+    interest: user.interest ?? [],
     role: user.role,
     verified: user.verified,
     profilePicture: user.profilePicture,
+    authProvider: user.authProvider,
+    profileCompleted: user.profileCompleted,
+
     createdAt: user.createdAt,
   };
 
