@@ -4,6 +4,7 @@ import globalErrorHandler from "./controllers/Error/globalErrorhandler.js";
 import CustomError from "./utils/customError.js";
 import businessRouter from "./routes/businessRoute.js";
 import userProfileRoute from "./routes/userProfileRoutes.js";
+import followRoute from "./routes/followRoute.js";
 import cors from "cors";
 
 const app = express();
@@ -39,6 +40,9 @@ app.use("/api/business",businessRouter);
 
 //^ router that manages the user Profile 
 app.use("/api/user",userProfileRoute);
+
+//* route for handling the listing and counting of the follow
+app.use("/api/follow",followRoute);
 
 //^ middleware for serving the static files
 // app.use(express.static("public"));
