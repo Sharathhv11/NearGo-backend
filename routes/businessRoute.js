@@ -31,12 +31,13 @@ import getTweets from "../controllers/Business/tweet/getTweets.js";
 import following from "../controllers/Business/followContollers/following.js";
 import unfollow from "../controllers/Business/followContollers/unfollow.js";
 
+
 const businessRouter = express.Router();
 
 //! route for handling the get request of the tweets
 businessRouter.get("/:businessId?/tweets", authorize, getTweets);
 
-businessRouter.post("/", authorize, createBusiness);
+businessRouter.post("/", authorize,upload.single("profile"), createBusiness);
 
 businessRouter.get("/", authorize, getBusinessesOwnedByUser);
 
