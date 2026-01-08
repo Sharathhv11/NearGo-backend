@@ -14,7 +14,7 @@ const login = handelAsyncFunction(async (req, res, next) => {
     return next(
       new CustomError(
         400,
-        "Email and password are the required feild to login."
+        "Email and password are the required field to login."
       )
     );
 

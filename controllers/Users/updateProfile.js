@@ -7,23 +7,12 @@ import cleanUpCloud from "../../utils/cleanUpCloud.js";
 // Allowed image MIME types
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-const DEFAULT_DP =
-  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-
 const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
   const userId = req.user._id;
   const updates = req.body;
 
-  
-  
-
   //Allowed profile fields
-  const updatableFields = [
-    "name",
-    "username",
-    "phone_no",
-    "interest",
-  ];
+  const updatableFields = ["name", "username", "phone_no", "interest"];
 
   const filteredUpdate = {};
 
@@ -50,17 +39,18 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
         )
       );
     }
-    
-    //Remove old image if not default
-    if (user.profilePicture && user.profilePicture !== DEFAULT_DP) {
-      const cleaned = await cleanUpCloud([user.profilePicture]);
-      if (!cleaned) {
-        return next(
-          new CustomError(500, "Failed to remove old profile image.")
-        );
-      }
 
-      
+    //Remove old image if not default
+    if (user.profilePicture && !user.profilePicture) {
+      //! verifying weather profile comes from google
+      if (req.user.profileImageSource !== "google") {
+        const cleaned = await cleanUpCloud([user.profilePicture]);
+        if (!cleaned) {
+          return next(
+            new CustomError(500, "Failed to remove old profile image.")
+          );
+        }
+      }
     }
 
     //Upload new image
@@ -74,7 +64,6 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
       new CustomError(400, "No valid profile data provided for update.")
     );
   }
-
 
   filteredUpdate.profileCompleted = true;
 

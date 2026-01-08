@@ -137,10 +137,13 @@ const userSchema = new mongoose.Schema(
 
     profilePicture: {
       type: String,
-      default:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      default:null,
     },
-
+    profileImageSource: {
+      type: String,
+      enum: ["google", "cloud"],
+      default: "cloud",
+    },
     authProvider: {
       type: String,
       enum: ["local", "google"],
@@ -148,9 +151,9 @@ const userSchema = new mongoose.Schema(
       default: "local",
     },
 
-    profileCompleted:{
-      type:Boolean,
-      default :false
+    profileCompleted: {
+      type: Boolean,
+      default: false,
     },
 
     notifications: [
@@ -182,7 +185,7 @@ userSchema.pre("save", async function (next) {
  * Compare password
  */
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  if(!this.password) return false;
+  if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 

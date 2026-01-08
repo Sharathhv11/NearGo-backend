@@ -44,6 +44,7 @@ const googleSignIn = handleAsync(async (req, res, next) => {
       profileCompleted: false,
       password: null,
       verified: true,
+      profileImageSource:"google"
     });
   }
 
