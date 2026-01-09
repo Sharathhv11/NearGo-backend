@@ -68,10 +68,7 @@ const createBusiness = handelAsyncFunction(async (req, res, next) => {
     status: "success",
     message: "Business registered successfully.",
     data: {
-      id: business._id,
-      profileCompletion: business.profileCompletion,
-      profileStage: business.profileStage,
-      profile: business.profile,
+      ...business._doc
     },
   });
 });
