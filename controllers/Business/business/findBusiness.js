@@ -3,7 +3,7 @@ import businessModel from "../../../models/BusinessModels/business.js";
 import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
 
 async function locationBased(req, next) {
-  const { longitude, latitude, distance, query } = req.body;
+  let { longitude, latitude, distance, query } = req.query;
 
   if (!longitude || !latitude || !distance || !query) {
     next(
@@ -14,6 +14,10 @@ async function locationBased(req, next) {
     );
     return;
   }
+
+  longitude = Number(longitude);
+  latitude = Number(latitude);
+  distance = Number(distance);
 
   let { limit, page } = req.query;
 
@@ -54,7 +58,7 @@ async function locationBased(req, next) {
 }
 
 async function globalBased(req, next) {
-  const { query } = req.body;
+  const { query } = req.query;
 
   let { limit, page } = req.query;
 
@@ -92,6 +96,7 @@ const findBusiness = handelAsyncFunction(async (req, res, next) => {
   const { searchType } = req.query;
 
   //& it operates in 3rd way /:businessID? which is optional but can be used to fetch the specific business details
+
   const { businessID } = req.params;
   if( businessID ){
     const businessData = await businessModel.findById(businessID);
