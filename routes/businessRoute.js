@@ -61,7 +61,7 @@ businessRouter.get("/:businessId/reviews", authorize, getReviews);
 
 //! routes for handling the offer of the business
 
-businessRouter.post("/:businessId/offers", authorize, createOffer);
+businessRouter.post("/:businessId/offers", authorize,upload.single("offerBanner"), createOffer);
 
 businessRouter.get("/:businessId/offers", authorize, viewOffer);
 
