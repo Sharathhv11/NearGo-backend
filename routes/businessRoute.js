@@ -67,7 +67,7 @@ businessRouter.get("/:businessId/offers", authorize, viewOffer);
 
 businessRouter.delete("/:businessId/offers/:offerId", authorize, deleteOffer);
 
-businessRouter.patch("/:businessId/offers/:offerId", authorize, updateOffer);
+businessRouter.patch("/:businessId/offers/:offerId", authorize,upload.single("offerBanner"), updateOffer);
 
 //!business tweets for handling the tweet structure
 

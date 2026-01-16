@@ -36,7 +36,7 @@ const offerSchema = new Schema(
     },
 
     image: {
-      type: String, // URL (Cloudinary / S3)
+      type: String,
       trim: true,
       default: null,
     },
@@ -48,13 +48,7 @@ const offerSchema = new Schema(
 
     endingDate: {
       type: Date,
-      required: [true, "Ending date is required"],
-      validate: {
-        validator: function () {
-          return this.endingDate > this.startingDate;
-        },
-        message: "Ending date must be after starting date",
-      },
+      required: [true, "Ending date is required"]
     },
   },
   {
