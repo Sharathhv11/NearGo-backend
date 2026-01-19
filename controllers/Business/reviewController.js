@@ -1,7 +1,8 @@
 import businessModel from "../../models/BusinessModels/business.js";
 import reviewModel from "./../../models/BusinessModels/review.js";
+import handelAsyncFunction from "./../../utils/asyncFunctionHandler.js";
 import asyncHandler from "./../../utils/asyncFunctionHandler.js";
-import CustomeError from "./../../utils/customError.js";
+import CustomError from "./../../utils/customError.js";
 
 const createReview = asyncHandler(async (req, res, next) => {
   const inValidFields = ["like", "dislike", "replies", "edited"];
@@ -23,12 +24,19 @@ const createReview = asyncHandler(async (req, res, next) => {
 
   if (!businessDocu) {
     return next(
-      new CustomeError(
+      new CustomError(
         400,
-        `No business registered with id ${filteredBody.BusinessID}.`
-      )
+        `No business registered with id ${filteredBody.BusinessID}.`,
+      ),
     );
   }
+
+  //^ verify weather owner posting the review
+  if (businessDocu.owner.toString() === req.user._id.toString()) {
+    return next(
+      new CustomError(400, "Owner is not permitted to post reviews."),
+    );
+  } 
 
   filteredBody.userId = req.user;
 
@@ -43,7 +51,7 @@ const createReview = asyncHandler(async (req, res, next) => {
         "rating.totalReview": 1,
       },
     },
-    { new: true, select: "rating" }
+    { new: true, select: "rating" },
   );
 
   res.status(201).send({
@@ -63,12 +71,12 @@ const deleteReview = asyncHandler(async (req, res, next) => {
 
   if (matchUser.userId._id !== req.user) {
     return next(
-      new CustomeError(400, "Only owner of the review can delete it.")
+      new CustomError(400, "Only owner of the review can delete it."),
     );
   }
 
   if (!matchUser) {
-    return next(new CustomeError(400, `No review exists with ${reviewId}`));
+    return next(new CustomError(400, `No review exists with ${reviewId}`));
   }
 
   const deletedReview = await reviewModel.findByIdAndDelete(reviewId);
@@ -81,7 +89,7 @@ const deleteReview = asyncHandler(async (req, res, next) => {
         "rating.totalReview": -1,
       },
     },
-    { new: true, select: "rating" }
+    { new: true, select: "rating" },
   );
 
   res.status(201).send({
@@ -103,33 +111,56 @@ const updateReview = asyncHandler(async (req, res, next) => {
 
   const { reviewId, businessId } = req.params;
 
-  function queryUpdate(body) {
-    const modifiedBody = { ...body };
+  const oldReview = await reviewModel.findById(reviewId);
+  if (!oldReview) {
+    return next(new CustomError(404, `No review found with id ${reviewId}`));
+  }
 
+  function queryUpdate(body) {
+    const modifiedBody = {};
+
+    /* like toggle */
+    if (body.like) {
+      const hasLiked = oldReview.like.includes(req.user._id);
+      const hasDisliked = oldReview.dislike.includes(req.user._id);
+
+      modifiedBody.$pull = {};
+      modifiedBody.$addToSet = {};
+
+      if (hasLiked) {
+        modifiedBody.$pull.like = req.user._id;
+      } else {
+        modifiedBody.$addToSet.like = req.user._id;
+      }
+
+      if (hasDisliked) {
+        modifiedBody.$pull.dislike = req.user._id;
+      }
+    }
+
+    /* dislike toggle */
+    if (body.dislike) {
+      const hasDisliked = oldReview.dislike.includes(req.user._id);
+      const hasLiked = oldReview.like.includes(req.user._id);
+
+      modifiedBody.$pull = {};
+      modifiedBody.$addToSet = {};
+
+      if (hasDisliked) {
+        modifiedBody.$pull.dislike = req.user._id;
+      } else {
+        modifiedBody.$addToSet.dislike = req.user._id;
+      }
+
+      if (hasLiked) {
+        modifiedBody.$pull.like = req.user._id;
+      }
+    }
+
+    /* normal field updates */
     for (let field in body) {
-      if (field === "like") {
-        delete modifiedBody.like;
-        modifiedBody.$push = {
-          ...modifiedBody.$push,
-          like: req.user._id || body.like,
-        };
-      }
-      if (field === "dislike") {
-        delete modifiedBody.dislike;
-        modifiedBody.$push = {
-          ...modifiedBody.$push,
-          dislike: req.user._id || body.dislike,
-        };
-      }
-      if (field === "replies") {
-        delete modifiedBody.replies;
-        modifiedBody.$push = {
-          ...modifiedBody.$push,
-          replies: {
-            ...body.replies,
-            user: req.user._id || body.replies.user,
-          },
-        };
+      if (field !== "like" && field !== "dislike") {
+        modifiedBody[field] = body[field];
       }
     }
 
@@ -138,22 +169,14 @@ const updateReview = asyncHandler(async (req, res, next) => {
 
   const updatingFields = queryUpdate(filteredBody);
 
-
-  
-
   let business;
   if (updatingFields.rating) {
     business = await businessModel.findById(businessId);
     if (!business) {
       return next(
-        new CustomeError(404, `No business found with id ${businessId}`)
+        new CustomError(404, `No business found with id ${businessId}`)
       );
     }
-  }
-
-  const oldReview = await reviewModel.findById(reviewId);
-  if (!oldReview) {
-    return next(new CustomeError(404, `No review found with id ${reviewId}`));
   }
 
   const updatedReview = await reviewModel.findByIdAndUpdate(
@@ -165,16 +188,13 @@ const updateReview = asyncHandler(async (req, res, next) => {
     }
   );
 
-  
-
   let updatedRating;
   if (updatingFields.rating) {
     updatedRating = await businessModel.findByIdAndUpdate(
       businessId,
       {
         $inc: {
-          "rating.sumOfReview":
-            -oldReview.rating + updatingFields.rating
+          "rating.sumOfReview": -oldReview.rating + updatingFields.rating,
         },
       },
       { new: true, select: "rating" }
@@ -191,24 +211,37 @@ const updateReview = asyncHandler(async (req, res, next) => {
   });
 });
 
-const getReviews = asyncHandler(async (req, res, next) => {
-    const { businessId } = req.params;
 
-    const limit = parseInt(req.query.limit) || 10;
-    const page = parseInt(req.query.page) || 1;
-    
+const getReviews = asyncHandler(async (req, res) => {
+  const { businessId } = req.params;
 
-    const reviews = await reviewModel.find({
-      BusinessID : businessId
-    }).limit(limit).skip(limit*page).populate("userId","email username verified profilePicture");
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const page = parseInt(req.query.page, 10) || 1;
+  const skip = (page - 1) * limit;
 
 
-    res.status(200).send({
-      status : "success",
-      message : "Reviews fetched successfully",
-      data : reviews
-    })
+  const [reviews, totalReviews] = await Promise.all([
+    reviewModel
+      .find({ BusinessID: businessId })
+      .populate("userId", "email username verified profilePicture")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
 
+    reviewModel.countDocuments({ BusinessID: businessId }),
+  ]);
+
+  res.status(200).json({
+    status: "success",
+    message: "Reviews fetched successfully",
+    reviews,
+    totalReviews,
+    totalPages: Math.ceil(totalReviews / limit),
+    currentPage: page,
+  });
 });
+
+
+
 
 export { createReview, deleteReview, updateReview, getReviews };
