@@ -69,7 +69,7 @@ const deleteReview = asyncHandler(async (req, res, next) => {
 
   const matchUser = await reviewModel.findById(reviewId);
 
-  if (matchUser.userId._id !== req.user) {
+  if (matchUser.userId.toString() !== req.user._id.toString()) {
     return next(
       new CustomError(400, "Only owner of the review can delete it."),
     );
