@@ -9,8 +9,8 @@ async function locationBased(req, next) {
     next(
       new CustomError(
         400,
-        "Logitude,latitude,distance and query are required to fetch data."
-      )
+        "Logitude,latitude,distance and query are required to fetch data.",
+      ),
     );
     return;
   }
@@ -21,7 +21,7 @@ async function locationBased(req, next) {
 
   let { limit, page } = req.query;
 
- limit = parseInt(limit) || 10;
+  limit = parseInt(limit) || 10;
   page = parseInt(page) || 1;
   const skip = (page - 1) * limit;
 
@@ -98,13 +98,15 @@ const findBusiness = handelAsyncFunction(async (req, res, next) => {
   //& it operates in 3rd way /:businessID? which is optional but can be used to fetch the specific business details
 
   const { businessID } = req.params;
-  if( businessID ){
-    const businessData = await businessModel.findById(businessID);
+  if (businessID) {
+    const businessData = await businessModel
+      .findById(businessID)
+      .populate("owner", "username profilePicture email");
     res.status(200).send({
-        status:"success",
-        data : businessData
+      status: "success",
+      data: businessData,
     });
-    return; 
+    return;
   }
 
   if (searchType === "LocationBased") {
@@ -125,8 +127,8 @@ const findBusiness = handelAsyncFunction(async (req, res, next) => {
     next(
       new CustomError(
         400,
-        `this route won't operate with '${searchType}' parameter.`
-      )
+        `this route won't operate with '${searchType}' parameter.`,
+      ),
     );
     return;
   }
