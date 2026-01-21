@@ -30,6 +30,7 @@ import getTweets from "../controllers/Business/tweet/getTweets.js";
 //!import follow controllers
 import following from "../controllers/Business/followContollers/following.js";
 import unfollow from "../controllers/Business/followContollers/unfollow.js";
+import followingStatus from "../controllers/Business/followContollers/followingStatus.js";
 
  
 const businessRouter = express.Router();
@@ -84,6 +85,8 @@ businessRouter.delete("/:businessId/tweets/:tweetId", authorize, deleteTweet);
 
 businessRouter.post("/:businessId/follow", authorize, following);
 businessRouter.delete("/:businessId/follow", authorize, unfollow);
+businessRouter.get("/:businessID/follow-status",authorize,followingStatus);
+
 
 //! businesss media handler
 import uploadMedia from "../controllers/Business/business/businessMedia/upload.js";
