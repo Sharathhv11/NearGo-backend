@@ -111,7 +111,9 @@ const updateReview = asyncHandler(async (req, res, next) => {
 
   const { reviewId, businessId } = req.params;
 
-  const oldReview = await reviewModel.findById(reviewId).populate("BusinessID","owner");
+  const oldReview = await reviewModel
+    .findById(reviewId)
+    .populate("BusinessID", "owner");
   if (!oldReview) {
     return next(new CustomError(404, `No review found with id ${reviewId}`));
   }
@@ -159,16 +161,14 @@ const updateReview = asyncHandler(async (req, res, next) => {
 
     if (typeof body.likedByOwner === "boolean") {
       if (oldReview.BusinessID.owner.toString() !== req.user._id.toString()) {
-        return next(
-          new CustomError(400, "Only owner can provide the owner like."),
-        );
+        throw new CustomError(400, "Only owner can provide the owner like.");
       }
       modifiedBody.likedByOwner = !oldReview.likedByOwner;
     }
 
     /* normal field updates */
     for (let field in body) {
-      if (field !== "like" && field !== "dislike" && field !=="likedByOwner") {
+      if (field !== "like" && field !== "dislike" && field !== "likedByOwner") {
         modifiedBody[field] = body[field];
       }
     }
@@ -176,10 +176,24 @@ const updateReview = asyncHandler(async (req, res, next) => {
     return modifiedBody;
   }
 
-  const updatingFields = queryUpdate(filteredBody);
+  let updatingFields = {};
+
+  try {
+    updatingFields = queryUpdate(filteredBody);
+  } catch (error) {
+    return next(error);
+  }
+
+  if (Object.keys(updatingFields).length === 0) {
+    return next(new CustomError(400, "No valid fields provided to update"));
+  }
+
+  if (updatingFields.comment || typeof updatingFields.rating === "number") {
+    updatingFields.edited = true;
+  }
 
   let business;
-  if (updatingFields.rating) {
+  if (typeof updatingFields.rating === "number") {
     business = await businessModel.findById(businessId);
     if (!business) {
       return next(
@@ -198,7 +212,7 @@ const updateReview = asyncHandler(async (req, res, next) => {
   );
 
   let updatedRating;
-  if (updatingFields?.rating) {
+  if (typeof updatingFields.rating === "number") {
     updatedRating = await businessModel.findByIdAndUpdate(
       businessId,
       {
