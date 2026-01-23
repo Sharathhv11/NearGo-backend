@@ -25,22 +25,25 @@ const postTweet = handelAsyncFunction(async function(req,res,next){
         return next(new CustomError(400, "Tweet content is required."));
     }
 
-    const media = await uploadToCloud(req.files);
 
-    const validFields = ["tweet","hashtags","visibility"];
-    for( let key in req.body ){
-        if( !validFields.includes(key) ) delete req.body[key];
-    }
+    res.send("everything is going fine.");
 
-    req.body.postedBy = businessId;
-    req.body.media = media;
-    const tweetDocument = await tweetModel.create(req.body);
+    // const media = await uploadToCloud(req.files);
 
-    res.status(201).send({
-        status : "success",
-        message : "tweet posted successfully.",
-        data : tweetDocument
-    })
+    // const validFields = ["tweet","hashtags","visibility"];
+    // for( let key in req.body ){
+    //     if( !validFields.includes(key) ) delete req.body[key];
+    // }
+
+    // req.body.postedBy = businessId;
+    // req.body.media = media;
+    // const tweetDocument = await tweetModel.create(req.body);
+
+    // res.status(201).send({
+    //     status : "success",
+    //     message : "tweet posted successfully.",
+    //     data : tweetDocument
+    // })
 
 
 });

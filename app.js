@@ -5,6 +5,7 @@ import CustomError from "./utils/customError.js";
 import businessRouter from "./routes/businessRoute.js";
 import userProfileRoute from "./routes/userProfileRoutes.js";
 import followRoute from "./routes/followRoute.js";
+import paymentGateway from "./routes/payment.js"
 import cors from "cors";
 
 const app = express();
@@ -33,6 +34,9 @@ app.use(express.json())
 
 //^ router that manages the authentication functionality
 app.use("/api/auth",userRoute);
+
+//^ payment gate APIs
+app.use("/api/payment",paymentGateway);
 
 
 //^ router that manages the business logic 

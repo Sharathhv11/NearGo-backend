@@ -56,6 +56,10 @@ const tweetSchema = new Schema(
       enum: ["public", "followers"],
       default: "public",
     },
+    edited : {
+      type:Boolean,
+      default : false
+    }
   },
   { timestamps: true }
 );
