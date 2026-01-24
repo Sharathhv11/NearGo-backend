@@ -30,11 +30,33 @@ const formatJWTError = () =>
 const formatJWTExpiredError = () =>
   new CustomError(401, "Token expired. Please login again.");
 
+//Subscription/Business Limit Errors
+const formatSubscriptionError = (error) => {
+  if (error.code === "SUBSCRIPTION_REQUIRED") {
+    return new CustomError(
+      403, 
+      "Free account business limit reached. Upgrade to premium for more businesses.", 
+      { code: "SUBSCRIPTION_REQUIRED" }
+    );
+  }
+  
+  if (error.code === "PREMIUM_LIMIT_REACHED") {
+    return new CustomError(
+      403, 
+      `Premium account business limit (${process.env.BUSINESS_REG_LIMIT_PAID || 10}) reached.`, 
+      { code: "PREMIUM_LIMIT_REACHED" }
+    );
+  }
+  
+  return error; // Return original if not subscription error
+};
+
 const sendResponse = (error, res) => {
   if (error.isOperational) {
     return res.status(error.statusCode).send({
       status: "fail",
       message: error.message,
+      ...(error.code && { code: error.code }), //  Include error code
     });
   }
 
@@ -63,6 +85,10 @@ const productionError = (error, res) => {
 
   if (error.name === "TokenExpiredError") {
     error = formatJWTExpiredError();
+  }
+
+  if (error.code) {
+    error = formatSubscriptionError(error);
   }
 
   sendResponse(error, res);
