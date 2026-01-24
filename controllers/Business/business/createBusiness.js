@@ -24,6 +24,42 @@ const createBusiness = handelAsyncFunction(async (req, res, next) => {
   const owner = req.user._id;
   const businessInfo = req.body;
 
+  //^IF USER IS HAVING FREE TIER ACCOUNT NEED TO RESTRICT HIM FROM REGISTERING MORE THAN FREE ACCOUNT BUSINESS LIMIT
+  const businessOwnedByUser = await businessModel.find({
+    owner,
+  });
+
+  const FREE_LIMIT = Number(process.env.BUSINESS_REG_LIMIT_FREE);
+  const PAID_LIMIT = Number(process.env.BUSINESS_REG_LIMIT_PAID);
+
+  const isPremiumExpired =
+    req.user.account.type === "premium" &&
+    req.user.account.expiresAt &&
+    req.user.account.expiresAt <= Date.now();
+
+  if (
+    (req.user.account.type === "free" || isPremiumExpired) &&
+    businessOwnedByUser.length >= FREE_LIMIT
+  ) {
+    return next(
+      new CustomError(403, "Upgrade required", {
+        code: "SUBSCRIPTION_REQUIRED",
+      }),
+    );
+  }
+
+  if (
+    req.user.account.type === "premium" &&
+    !isPremiumExpired &&
+    businessOwnedByUser.length >= PAID_LIMIT
+  ) {
+    return next(
+      new CustomError(403, "Business limit reached", {
+        code: "PREMIUM_LIMIT_REACHED",
+      }),
+    );
+  }
+
   if (!Object.keys(businessInfo).length) {
     return next(new CustomError(400, "Business information is required."));
   }
@@ -36,8 +72,8 @@ const createBusiness = handelAsyncFunction(async (req, res, next) => {
       return next(
         new CustomError(
           400,
-          "Invalid file type. Only JPEG, PNG, and WEBP formats are allowed."
-        )
+          "Invalid file type. Only JPEG, PNG, and WEBP formats are allowed.",
+        ),
       );
     }
 
@@ -68,7 +104,7 @@ const createBusiness = handelAsyncFunction(async (req, res, next) => {
     status: "success",
     message: "Business registered successfully.",
     data: {
-      ...business._doc
+      ...business._doc,
     },
   });
 });

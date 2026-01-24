@@ -137,7 +137,7 @@ const userSchema = new mongoose.Schema(
 
     profilePicture: {
       type: String,
-      default:null,
+      default: null,
     },
     profileImageSource: {
       type: String,
@@ -156,6 +156,32 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    account: {
+      type: {
+        type: String,
+        enum: ["free", "premium"],
+        default: "free",
+      },
+      expiresAt: {
+        type: Date,
+        default: null,
+      },
+      paymentInfo: {
+        razorpay_order_id: {
+          type: String,
+          default: null,
+        },
+        razorpay_payment_id: {
+          type: String,
+          default: null,
+        },
+        razorpay_signature: {
+          type: String,
+          default: null,
+        },
+      },
+    },
+
     notifications: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -163,7 +189,7 @@ const userSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 /**
@@ -174,7 +200,7 @@ userSchema.pre("save", async function (next) {
 
   this.password = await bcrypt.hash(
     this.password,
-    Number(process.env.SALTROUNDS)
+    Number(process.env.SALTROUNDS),
   );
 
   this.passwordChangedAt = Date.now();
