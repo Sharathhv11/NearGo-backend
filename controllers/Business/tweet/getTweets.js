@@ -42,7 +42,7 @@ async function randomTweets(lon, lat, user, page, limit, distance, next) {
         .populate("postedBy", "businessName email profile");
 
       return tweet;
-    })
+    }),
   );
 
   const businessNear = (
@@ -69,7 +69,7 @@ async function randomTweets(lon, lat, user, page, limit, distance, next) {
         .populate("postedBy", "businessName email profile");
 
       return tweet;
-    })
+    }),
   );
 
   const tweetResult = [...tweetsArray, ...nearTweets];
@@ -109,45 +109,77 @@ async function followingTweets(userId, page, limit) {
         .populate("postedBy", "businessName email profile");
 
       return tweet;
-    })
+    }),
   );
 
   return tweetsArray;
 }
 
 const getTweets = handelAsyncFunction(async function (req, res, next) {
-  const { page, type, limit, distance } = req.query;
+  const { page = 1, type, limit = 10, distance } = req.query;
+  const { businessId } = req.params;
 
-  if (type.toLowerCase() === "following") {
-    const [tweets] = await followingTweets(req.user._id, page || 1, limit);
-    res.status(200).send({
+  const parsedPage = parseInt(page, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const skip = (parsedPage - 1) * parsedLimit;
+
+  //^ BUSINESS TWEETS
+  if (businessId) {
+    const [tweets, totalTweets] = await Promise.all([
+      tweetModel
+        .find({ postedBy : businessId })
+        .populate("postedBy", "businessName email profile")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parsedLimit),
+
+      tweetModel.countDocuments({  postedBy : businessId }),
+    ]);
+
+
+    return res.status(200).json({
       status: "success",
-
-      message: "Successfully fetched posts",
-      data: [...tweets],
-    });
-  } else {
-    //lon, lat, user, page, limit, distance, next
-
-    const { longitude, latitude } = req.body;
-    const ranTweets = await randomTweets(
-      longitude,
-      latitude,
-      req.user,
-      page,
-      limit,
-      distance,
-      next
-    );
-
-    res.status(200).send({
-      status: "success",
-      message: "tweets fetched successfully",
-      data: ranTweets,
+      message: "Business tweets fetched successfully",
+      data: tweets,
+      totalTweets,
+      totalPages: Math.ceil(totalTweets / parsedLimit),
+      currentPage: parsedPage,
     });
   }
 
-  //location based tweet retreival
+  // ^ FOLLOWING TWEETS
+  if (type?.toLowerCase() === "following") {
+    const [tweets] = await followingTweets(
+      req.user._id,
+      parsedPage,
+      parsedLimit,
+    );
+
+    return res.status(200).send({
+      status: "success",
+      message: "Successfully fetched posts",
+      data: tweets,
+    });
+  }
+
+  //^  RANDOM / LOCATION TWEETS
+  const { longitude, latitude } = req.body;
+
+  const ranTweets = await randomTweets(
+    longitude,
+    latitude,
+    req.user,
+    parsedPage,
+    parsedLimit,
+    distance,
+    next,
+  );
+
+  res.status(200).send({
+    status: "success",
+    message: "Tweets fetched successfully",
+    data: ranTweets,
+  });
 });
 
 export default getTweets;

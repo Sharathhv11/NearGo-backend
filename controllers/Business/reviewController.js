@@ -1,6 +1,6 @@
 import businessModel from "../../models/BusinessModels/business.js";
 import reviewModel from "./../../models/BusinessModels/review.js";
-import handelAsyncFunction from "./../../utils/asyncFunctionHandler.js";
+
 import asyncHandler from "./../../utils/asyncFunctionHandler.js";
 import CustomError from "./../../utils/customError.js";
 

@@ -75,7 +75,7 @@ businessRouter.patch("/:businessId/offers/:offerId", authorize,upload.single("of
 businessRouter.post(
   "/:businessId/tweets",
   authorize,
-  upload.array("media", 10),
+  upload.array("media", 5),
   postTweet
 );
 

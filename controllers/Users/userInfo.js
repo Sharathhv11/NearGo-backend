@@ -36,6 +36,7 @@ const getUserInfo = handelAsyncFunction(async (req, res, next) => {
     profileCompleted: target.profileCompleted,
     account: {
       type: isActivePremium ? "premium" : "free",
+      expiresAt :  target.account.expiresAt
     },
 
     createdAt: target.createdAt,
