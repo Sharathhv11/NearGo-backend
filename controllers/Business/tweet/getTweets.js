@@ -40,7 +40,7 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
       .find({
         "location.coordinates": {
           $near: {
-            $geometry: { type: "Point", coordinates: [longitude, latitude] },
+            $geometry: { type: "Point", coordinates: [latitude, longitude] },
             $maxDistance: distance || 10000,
           },
         },
