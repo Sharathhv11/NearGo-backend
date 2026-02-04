@@ -4,27 +4,19 @@ import tweetModel from "../../../models/tweet/tweetModel.js";
 import CustomError from "../../../utils/customError.js";
 import followingModel from "./../../../models/followModels/following.js";
 
-//tweets need to be suggest based on the
-//! location within radius of 10km
-//! interest
-//!following
-//! random
-
-async function randomTweets(lon, lat, user, page, limit, distance, next) {
+async function randomTweets(lon, lat, user, page, limit, distance) {
   const { interest } = user;
 
   const longitude = Number(lon);
   const latitude = Number(lat);
 
   if (isNaN(longitude) || isNaN(latitude)) {
-    return next(new CustomError(400, "Invalid coordinates for random fetch."));
+    throw new CustomError(400, "Invalid coordinates for random fetch.");
   }
 
   const businesses = (
     await businessModel
-      .find({
-        categories: { $in: interest },
-      })
+      .find({ categories: { $in: interest } })
       .skip((page - 1) * limit)
       .limit(limit)
   ).map((e) => e._id);
@@ -32,17 +24,15 @@ async function randomTweets(lon, lat, user, page, limit, distance, next) {
   const lastMonth = new Date();
   lastMonth.setMonth(lastMonth.getMonth() - 1);
 
-  const tweetsArray = await Promise.all(
-    businesses.map(async (e) => {
-      const tweet = await tweetModel
+  const interestTweets = await Promise.all(
+    businesses.map(async (e) =>
+      tweetModel
         .find({
           postedBy: e,
           createdAt: { $gt: lastMonth },
         })
-        .populate("postedBy", "businessName email profile");
-
-      return tweet;
-    }),
+        .populate("postedBy", "businessName email profile"),
+    ),
   );
 
   const businessNear = (
@@ -60,62 +50,50 @@ async function randomTweets(lon, lat, user, page, limit, distance, next) {
   ).map((e) => e._id);
 
   const nearTweets = await Promise.all(
-    businessNear.map(async (e) => {
-      const tweet = await tweetModel
+    businessNear.map(async (e) =>
+      tweetModel
         .find({
           postedBy: e,
           createdAt: { $gt: lastMonth },
         })
-        .populate("postedBy", "businessName email profile");
-
-      return tweet;
-    }),
+        .populate("postedBy", "businessName email profile"),
+    ),
   );
 
-  const tweetResult = [...tweetsArray, ...nearTweets];
-
-  const flat = tweetResult.flat();
+  const flatTweets = [...interestTweets, ...nearTweets].flat();
 
   const uniqueTweets = [
-    ...new Map(flat.map((t) => [t._id.toString(), t])).values(),
+    ...new Map(flatTweets.map((t) => [t._id.toString(), t])).values(),
   ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return uniqueTweets;
 }
 
 async function followingTweets(userId, page, limit) {
-  const followingBusiness = await followingModel.find({
-    user: userId,
-  });
+  const followingBusiness = await followingModel.findOne({ user: userId });
 
-  if (followingBusiness.length === 0) {
-    return {
-      status: "success",
-      message: "you are not following any business to show in feed.",
-    };
+  if (!followingBusiness || followingBusiness.following.length === 0) {
+    throw new CustomError(
+      200,
+      "You are not following any business to show in feed.",
+    );
   }
 
-  const tweetsArray = await Promise.all(
-    followingBusiness[0].following.map(async (e) => {
-      const tweet = await tweetModel
-        .find({
-          postedBy: e,
-        })
-        .sort({
-          createdAt: -1,
-        })
+  const tweets = await Promise.all(
+    followingBusiness.following.map(async (e) =>
+      tweetModel
+        .find({ postedBy: e })
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .populate("postedBy", "businessName email profile");
-
-      return tweet;
-    }),
+        .populate("postedBy", "businessName email profile"),
+    ),
   );
 
-  return tweetsArray;
+  return tweets.flat();
 }
 
-const getTweets = handelAsyncFunction(async function (req, res, next) {
+const getTweets = handelAsyncFunction(async (req, res) => {
   const { page = 1, type, limit = 10, distance } = req.query;
   const { businessId } = req.params;
 
@@ -123,19 +101,17 @@ const getTweets = handelAsyncFunction(async function (req, res, next) {
   const parsedLimit = parseInt(limit, 10);
   const skip = (parsedPage - 1) * parsedLimit;
 
-  //^ BUSINESS TWEETS
   if (businessId) {
     const [tweets, totalTweets] = await Promise.all([
       tweetModel
-        .find({ postedBy : businessId })
+        .find({ postedBy: businessId })
         .populate("postedBy", "businessName email profile")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parsedLimit),
 
-      tweetModel.countDocuments({  postedBy : businessId }),
+      tweetModel.countDocuments({ postedBy: businessId }),
     ]);
-
 
     return res.status(200).json({
       status: "success",
@@ -147,23 +123,17 @@ const getTweets = handelAsyncFunction(async function (req, res, next) {
     });
   }
 
-  // ^ FOLLOWING TWEETS
   if (type?.toLowerCase() === "following") {
-    const [tweets] = await followingTweets(
-      req.user._id,
-      parsedPage,
-      parsedLimit,
-    );
+    const tweets = await followingTweets(req.user._id, parsedPage, parsedLimit);
 
-    return res.status(200).send({
+    return res.status(200).json({
       status: "success",
       message: "Successfully fetched posts",
       data: tweets,
     });
   }
 
-  //^  RANDOM / LOCATION TWEETS
-  const { longitude, latitude } = req.body;
+  const { longitude, latitude } = req.query;
 
   const ranTweets = await randomTweets(
     longitude,
@@ -172,10 +142,9 @@ const getTweets = handelAsyncFunction(async function (req, res, next) {
     parsedPage,
     parsedLimit,
     distance,
-    next,
   );
 
-  res.status(200).send({
+  return res.status(200).json({
     status: "success",
     message: "Tweets fetched successfully",
     data: ranTweets,

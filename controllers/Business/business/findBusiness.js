@@ -9,7 +9,7 @@ async function locationBased(req, next) {
     next(
       new CustomError(
         400,
-        "Logitude,latitude,distance and query are required to fetch data.",
+        "Longitude,latitude,distance and query are required to fetch data.",
       ),
     );
     return;
