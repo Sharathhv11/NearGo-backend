@@ -40,7 +40,7 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
       .find({
         "location.coordinates": {
           $near: {
-            $geometry: { type: "Point", coordinates: [latitude, longitude] },
+            $geometry: { type: "Point", coordinates: [lat,lon] },
             $maxDistance: distance || 10000,
           },
         },
@@ -60,7 +60,9 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
     ),
   );
 
+
   const flatTweets = [...interestTweets, ...nearTweets].flat();
+
 
   const uniqueTweets = [
     ...new Map(flatTweets.map((t) => [t._id.toString(), t])).values(),
