@@ -13,9 +13,18 @@ const getFollowList = asyncHandler(async (req, res, next) => {
   // * Check if ID belongs to a USER (Following collection)
   const userFollowing = await followingModel
     .findOne({ user: id })
-    .populate("following", "name logo");
+    .populate("following", "businessName email profile");
 
   if (userFollowing) {
+    if (
+      req.user._id.toString() !== userFollowing.user.toString() &&
+      !userFollowing.visibility
+    ) {
+      return res.status(400).send({
+        status: "failed",
+        message: "unauthorized to see following list,",
+      });
+    }
     return res.status(200).json({
       status: "success",
       type: "user",
