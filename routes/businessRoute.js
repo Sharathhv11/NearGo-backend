@@ -32,13 +32,12 @@ import following from "../controllers/Business/followContollers/following.js";
 import unfollow from "../controllers/Business/followContollers/unfollow.js";
 import followingStatus from "../controllers/Business/followContollers/followingStatus.js";
 
- 
 const businessRouter = express.Router();
 
 //! route for handling the get request of the tweets
 businessRouter.get("/:businessId?/tweets", authorize, getTweets);
 
-businessRouter.post("/", authorize,upload.single("profile"), createBusiness);
+businessRouter.post("/", authorize, upload.single("profile"), createBusiness);
 
 businessRouter.get("/", authorize, getBusinessesOwnedByUser);
 
@@ -55,20 +54,30 @@ businessRouter.patch("/:businessId/reviews/:reviewId", authorize, updateReview);
 businessRouter.delete(
   "/:businessId/reviews/:reviewId",
   authorize,
-  deleteReview
+  deleteReview,
 );
 
 businessRouter.get("/:businessId/reviews", authorize, getReviews);
 
 //! routes for handling the offer of the business
 
-businessRouter.post("/:businessId/offers", authorize,upload.single("offerBanner"), createOffer);
+businessRouter.post(
+  "/:businessId/offers",
+  authorize,
+  upload.single("offerBanner"),
+  createOffer,
+);
 
 businessRouter.get("/:businessId/offers", authorize, viewOffer);
 
 businessRouter.delete("/:businessId/offers/:offerId", authorize, deleteOffer);
 
-businessRouter.patch("/:businessId/offers/:offerId", authorize,upload.single("offerBanner"), updateOffer);
+businessRouter.patch(
+  "/:businessId/offers/:offerId",
+  authorize,
+  upload.single("offerBanner"),
+  updateOffer,
+);
 
 //!business tweets for handling the tweet structure
 
@@ -76,7 +85,7 @@ businessRouter.post(
   "/:businessId/tweets",
   authorize,
   upload.array("media", 5),
-  postTweet
+  postTweet,
 );
 
 businessRouter.delete("/:businessId/tweets/:tweetId", authorize, deleteTweet);
@@ -85,17 +94,22 @@ businessRouter.delete("/:businessId/tweets/:tweetId", authorize, deleteTweet);
 
 businessRouter.post("/:businessId/follow", authorize, following);
 businessRouter.delete("/:businessId/follow", authorize, unfollow);
-businessRouter.get("/:businessID/follow-status",authorize,followingStatus);
-
+businessRouter.delete(
+  "/:businessId/follower/:userId",
+  authorize,
+  removeFollower,
+);
+businessRouter.get("/:businessID/follow-status", authorize, followingStatus);
 
 //! businesss media handler
 import uploadMedia from "../controllers/Business/business/businessMedia/upload.js";
 import getBusinessesOwnedByUser from "../controllers/Business/business/getBusinessOwnedBy.js";
+import removeFollower from "../controllers/Business/followContollers/removeFollower.js";
 businessRouter.post(
   "/:businessId/media",
   authorize,
   upload.array("media", 10),
-  uploadMedia
+  uploadMedia,
 );
 
 export default businessRouter;

@@ -18,7 +18,7 @@ const unfollow = handelAsyncFunction(async function (req, res, next) {
         business: businessId
   });
 
-  const unFolloingUserDocument = await followingModel.findOneAndDelete({
+  const unFollowingUserDocument = await followingModel.findOneAndDelete({
     user:req.user._id
   });
 

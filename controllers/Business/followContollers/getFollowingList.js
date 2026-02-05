@@ -36,7 +36,7 @@ const getFollowList = asyncHandler(async (req, res, next) => {
   // * Check if ID belongs to a BUSINESS (Followers collection)
   const businessFollowers = await followersModel
     .findOne({ business: id })
-    .populate("followers", "name profilePic");
+    .populate("followers", "name email profilePicture");
 
   if (businessFollowers) {
     return res.status(200).json({
