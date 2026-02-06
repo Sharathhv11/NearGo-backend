@@ -10,9 +10,7 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
   const longitude = Number(lon);
   const latitude = Number(lat);
 
-  if (isNaN(longitude) || isNaN(latitude)) {
-    throw new CustomError(400, "Invalid coordinates for random fetch.");
-  }
+  
 
   const businesses = (
     await businessModel
@@ -35,30 +33,33 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
     ),
   );
 
-  const businessNear = (
-    await businessModel
-      .find({
-        "location.coordinates": {
-          $near: {
-            $geometry: { type: "Point", coordinates: [lat,lon] },
-            $maxDistance: distance || 10000,
-          },
-        },
-      })
-      .skip((page - 1) * limit)
-      .limit(limit)
-  ).map((e) => e._id);
-
-  const nearTweets = await Promise.all(
-    businessNear.map(async (e) =>
-      tweetModel
+  let nearTweets = [];
+  if (!isNaN(longitude) && !isNaN(latitude)) {   
+    const businessNear = (
+      await businessModel
         .find({
-          postedBy: e,
-          createdAt: { $gt: lastMonth },
+          "location.coordinates": {
+            $near: {
+              $geometry: { type: "Point", coordinates: [lat,lon] },
+              $maxDistance: distance || 10000,
+            },
+          },
         })
-        .populate("postedBy", "businessName email profile"),
-    ),
-  );
+        .skip((page - 1) * limit)
+        .limit(limit)
+    ).map((e) => e._id);
+     nearTweets = await Promise.all(
+      businessNear.map(async (e) =>
+        tweetModel
+          .find({
+            postedBy: e,
+            createdAt: { $gt: lastMonth },
+          })
+          .populate("postedBy", "businessName email profile"),
+      ),
+    );
+  }
+
 
 
   const flatTweets = [...interestTweets, ...nearTweets].flat();

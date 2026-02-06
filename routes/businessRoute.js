@@ -34,6 +34,9 @@ import followingStatus from "../controllers/Business/followContollers/followingS
 
 const businessRouter = express.Router();
 
+//! near by businesses
+businessRouter.get("/nearBy",authorize,localExplore);
+
 //! route for handling the get request of the tweets
 businessRouter.get("/:businessId?/tweets", authorize, getTweets);
 
@@ -105,6 +108,7 @@ businessRouter.get("/:businessID/follow-status", authorize, followingStatus);
 import uploadMedia from "../controllers/Business/business/businessMedia/upload.js";
 import getBusinessesOwnedByUser from "../controllers/Business/business/getBusinessOwnedBy.js";
 import removeFollower from "../controllers/Business/followContollers/removeFollower.js";
+import localExplore from "../controllers/Business/business/Explore.js";
 businessRouter.post(
   "/:businessId/media",
   authorize,
