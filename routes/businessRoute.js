@@ -43,7 +43,7 @@ businessRouter.get("/:businessId?/tweets", authorize, getTweets);
 
 businessRouter.post("/", authorize, upload.single("profile"), createBusiness);
 
-businessRouter.get("/", authorize, getBusinessesOwnedByUser);
+businessRouter.get("/owned", authorize, getBusinessesOwnedByUser);
 
 businessRouter.get("/:businessID?", authorize, findBusiness);
 

@@ -2,6 +2,7 @@ import CustomError from "../../../utils/customError.js";
 import businessModel from "../../../models/BusinessModels/business.js";
 import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
 
+
 async function locationBased(req, next) {
   let { longitude, latitude, distance, query } = req.query;
 
@@ -31,7 +32,7 @@ async function locationBased(req, next) {
         {
           "location.coordinates": {
             $near: {
-              $geometry: { type: "Point", coordinates: [longitude, latitude] },
+              $geometry: { type: "Point", coordinates: [latitude,longitude] },
               $maxDistance: distance,
             },
           },
@@ -113,14 +114,14 @@ const findBusiness = handelAsyncFunction(async (req, res, next) => {
     const response = await locationBased(req, next);
     res.status(200).send({
       status: "success",
-      count: response.length,
+      count: response?.length || 0,
       data: response,
     });
   } else if (searchType === "GlobalBased") {
     const response = await globalBased(req, next);
     res.status(200).send({
       status: "success",
-      count: response.length,
+      count: response?.length || 0,
       data: response,
     });
   } else {
