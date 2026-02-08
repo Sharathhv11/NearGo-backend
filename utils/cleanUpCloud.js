@@ -41,10 +41,6 @@ async function cleanUpCloud(urls) {
     .map(extractFilePath)
     .filter((path) => path !== null && path.length > 0);
 
-  if (fileNames.length === 0) {
-    console.log("No valid files to delete.");
-    return;
-  }
 
   const { error } = await supabaseClient.storage
     .from("NearGo")

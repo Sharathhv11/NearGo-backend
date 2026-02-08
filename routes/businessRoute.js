@@ -6,6 +6,7 @@ import upload from "../utils/multer.js";
 import createBusiness from "../controllers/Business/business/createBusiness.js";
 import findBusiness from "../controllers/Business/business/findBusiness.js";
 import updateBusiness from "../controllers/Business/business/updateBusiness.js";
+import deleteBusiness from "../controllers/Business/business/deleteBusiness.js";
 
 //!importing review controllers
 import {
@@ -45,6 +46,8 @@ businessRouter.post("/", authorize, upload.single("profile"), createBusiness);
 businessRouter.get("/", authorize, getBusinessesOwnedByUser);
 
 businessRouter.get("/:businessID?", authorize, findBusiness);
+
+businessRouter.delete("/:businessID?", authorize,deleteBusiness); 
 
 businessRouter.patch("/:businessID", authorize, updateBusiness);
 
@@ -109,6 +112,8 @@ import uploadMedia from "../controllers/Business/business/businessMedia/upload.j
 import getBusinessesOwnedByUser from "../controllers/Business/business/getBusinessOwnedBy.js";
 import removeFollower from "../controllers/Business/followContollers/removeFollower.js";
 import localExplore from "../controllers/Business/business/Explore.js";
+
+
 businessRouter.post(
   "/:businessId/media",
   authorize,
