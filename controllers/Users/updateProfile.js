@@ -11,6 +11,13 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
   const userId = req.user._id;
   const updates = req.body;
 
+  const {userId:userIDParams} = req.params;
+
+
+  if( userId.toString() !== userIDParams ){
+      return next(new CustomError(403,"unAuthorized to update profile."));
+  }
+
   //Allowed profile fields
   const updatableFields = ["name", "username", "phone_no", "interest"];
 
@@ -35,8 +42,8 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
       return next(
         new CustomError(
           400,
-          "Invalid file type. Only JPEG, PNG, and WEBP formats are allowed."
-        )
+          "Invalid file type. Only JPEG, PNG, and WEBP formats are allowed.",
+        ),
       );
     }
 
@@ -47,7 +54,7 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
         const cleaned = await cleanUpCloud([user.profilePicture]);
         if (!cleaned) {
           return next(
-            new CustomError(500, "Failed to remove old profile image.")
+            new CustomError(500, "Failed to remove old profile image."),
           );
         }
       }
@@ -61,7 +68,7 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
   //Nothing to update
   if (!Object.keys(filteredUpdate).length) {
     return next(
-      new CustomError(400, "No valid profile data provided for update.")
+      new CustomError(400, "No valid profile data provided for update."),
     );
   }
 
@@ -74,7 +81,7 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   res.status(200).json({
