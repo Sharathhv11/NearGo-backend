@@ -2,23 +2,13 @@ import businessModel from "./../../../models/BusinessModels/business.js";
 import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
 import CustomError from "../../../utils/customError.js";
 import uploadToCloud from "../../../utils/uploadFiles.js";
+import calculateProfileCompletion from "../../../utils/profileCompletion.js";
 
 //* Allowed image MIME types (DP only)
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 //* Profile completion calculator
-const calculateProfileCompletion = (business) => {
-  let percent = 20;
 
-  if (business.categories?.length) percent += 15;
-  if (business.workingHours?.weekdays?.open) percent += 10;
-  if (business.media?.length >= 3) percent += 15;
-  if (business.socialLinks?.website) percent += 5;
-  if (business.socialLinks?.instagram) percent += 5;
-  if (business.verification?.isVerified) percent += 15;
-
-  return Math.min(percent, 100);
-};
 
 const createBusiness = handelAsyncFunction(async (req, res, next) => {
   const owner = req.user._id;

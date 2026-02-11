@@ -49,7 +49,7 @@ businessRouter.get("/:businessID?", authorize, findBusiness);
 
 businessRouter.delete("/:businessID?", authorize,deleteBusiness); 
 
-businessRouter.patch("/:businessID", authorize, updateBusiness);
+businessRouter.patch("/:businessID", authorize,upload.single("profile"), updateBusiness);
 
 //! routes for handling the review of the business
 
