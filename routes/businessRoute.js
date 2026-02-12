@@ -112,6 +112,7 @@ import uploadMedia from "../controllers/Business/business/businessMedia/upload.j
 import getBusinessesOwnedByUser from "../controllers/Business/business/getBusinessOwnedBy.js";
 import removeFollower from "../controllers/Business/followContollers/removeFollower.js";
 import localExplore from "../controllers/Business/business/Explore.js";
+import deleteBusinessMedia from "../controllers/Business/business/businessMedia/delete.js";
 
 
 businessRouter.post(
@@ -120,5 +121,7 @@ businessRouter.post(
   upload.array("media", 10),
   uploadMedia,
 );
+
+businessRouter.delete("/:businessID/media/:url",authorize,deleteBusinessMedia);
 
 export default businessRouter;
