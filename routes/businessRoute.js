@@ -94,7 +94,8 @@ businessRouter.post(
   postTweet,
 );
 
-businessRouter.delete("/:businessId/tweets/:tweetId", authorize, deleteTweet);
+businessRouter.delete("/:businessId/tweet/:tweetId", authorize, deleteTweet);
+businessRouter.patch("/:businessId/tweet/:tweetId",authorize,updateTweet);
 
 //!follow  routes
 
@@ -113,6 +114,7 @@ import getBusinessesOwnedByUser from "../controllers/Business/business/getBusine
 import removeFollower from "../controllers/Business/followContollers/removeFollower.js";
 import localExplore from "../controllers/Business/business/Explore.js";
 import deleteBusinessMedia from "../controllers/Business/business/businessMedia/delete.js";
+import updateTweet from "../controllers/Business/tweet/updateTweet.js";
 
 
 businessRouter.post(

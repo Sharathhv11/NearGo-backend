@@ -10,8 +10,6 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
   const longitude = Number(lon);
   const latitude = Number(lat);
 
-  
-
   const businesses = (
     await businessModel
       .find({ categories: { $in: interest } })
@@ -29,18 +27,26 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
           postedBy: e,
           createdAt: { $gt: lastMonth },
         })
-        .populate("postedBy", "businessName email profile"),
+        .populate("postedBy", "businessName email profile")
+        .populate("likes", "email username  profilePicture")
+        .populate({
+          path: "replies",
+          populate: {
+            path: "userId",
+            select: "email username profilePicture",
+          },
+        }),
     ),
   );
 
   let nearTweets = [];
-  if (!isNaN(longitude) && !isNaN(latitude)) {   
+  if (!isNaN(longitude) && !isNaN(latitude)) {
     const businessNear = (
       await businessModel
         .find({
           "location.coordinates": {
             $near: {
-              $geometry: { type: "Point", coordinates: [lat,lon] },
+              $geometry: { type: "Point", coordinates: [lat, lon] },
               $maxDistance: distance || 10000,
             },
           },
@@ -48,22 +54,27 @@ async function randomTweets(lon, lat, user, page, limit, distance) {
         .skip((page - 1) * limit)
         .limit(limit)
     ).map((e) => e._id);
-     nearTweets = await Promise.all(
+    nearTweets = await Promise.all(
       businessNear.map(async (e) =>
         tweetModel
           .find({
             postedBy: e,
             createdAt: { $gt: lastMonth },
           })
-          .populate("postedBy", "businessName email profile"),
+          .populate("postedBy", "businessName email profile")
+          .populate("likes", "email username  profilePicture")
+          .populate({
+          path: "replies",
+          populate: {
+            path: "userId",
+            select: "email username profilePicture",
+          },
+        }),
       ),
     );
   }
 
-
-
   const flatTweets = [...interestTweets, ...nearTweets].flat();
-
 
   const uniqueTweets = [
     ...new Map(flatTweets.map((t) => [t._id.toString(), t])).values(),
@@ -89,7 +100,15 @@ async function followingTweets(userId, page, limit) {
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .populate("postedBy", "businessName email profile"),
+        .populate("postedBy", "businessName email profile")
+        .populate("likes", "email username  profilePicture")
+        .populate({
+          path: "replies",
+          populate: {
+            path: "userId",
+            select: "email username profilePicture",
+          },
+        }),
     ),
   );
 
@@ -109,6 +128,13 @@ const getTweets = handelAsyncFunction(async (req, res) => {
       tweetModel
         .find({ postedBy: businessId })
         .populate("postedBy", "businessName email profile")
+         .populate("likes", "email username  profilePicture")
+        .populate({
+          path: "replies",
+          populate: {
+            path: "userId",
+            select: "email username profilePicture",
+          }})
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(parsedLimit),
@@ -152,6 +178,6 @@ const getTweets = handelAsyncFunction(async (req, res) => {
     message: "Tweets fetched successfully",
     data: ranTweets,
   });
-});
+}); 
 
 export default getTweets;
