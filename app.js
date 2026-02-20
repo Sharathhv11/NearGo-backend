@@ -7,6 +7,7 @@ import userProfileRoute from "./routes/userProfileRoutes.js";
 import followRoute from "./routes/followRoute.js";
 import paymentGateway from "./routes/payment.js"
 import cors from "cors";
+import analyticsRouter from "./routes/analyticsRoute.js";
 
 const app = express();
 
@@ -37,6 +38,9 @@ app.use("/api/auth",userRoute);
 
 //^ payment gate APIs
 app.use("/api/payment",paymentGateway);
+
+//^ route for analytics 
+app.use("/api/analytics",analyticsRouter)
 
 
 //^ router that manages the business logic 

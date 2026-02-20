@@ -1,6 +1,7 @@
 import CustomError from "../../../utils/customError.js";
 import businessModel from "../../../models/BusinessModels/business.js";
 import handelAsyncFunction from "../../../utils/asyncFunctionHandler.js";
+import { trackBusinessProfileView } from "../../../service/analyticsService.js";
 
 
 async function locationBased(req, next) {
@@ -103,6 +104,10 @@ const findBusiness = handelAsyncFunction(async (req, res, next) => {
     const businessData = await businessModel
       .findById(businessID)
       .populate("owner", "username profilePicture email");
+    
+    // Track business profile view
+    await trackBusinessProfileView(businessID);
+    
     res.status(200).send({
       status: "success",
       data: businessData,

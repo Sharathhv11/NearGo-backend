@@ -3,6 +3,7 @@ import followersModel from "../../../models/followModels/followers.js";
 import followingModel from "../../../models/followModels/following.js";
 import businessModel from "../../../models/BusinessModels/business.js";
 import CustomError from "../../../utils/customError.js";
+import { trackFollowAction } from "../../../service/analyticsService.js";
 
 
 const unfollow = handelAsyncFunction(async function (req, res, next) {
@@ -22,6 +23,8 @@ const unfollow = handelAsyncFunction(async function (req, res, next) {
     user:req.user._id
   });
 
+  // Track unfollow analytics
+  await trackFollowAction(businessId, false);
 
   res.status(200).send({
     status:"success",

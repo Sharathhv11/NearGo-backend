@@ -3,6 +3,7 @@ import businessModel from "../../../models/BusinessModels/business.js";
 import tweetModel from "../../../models/tweet/tweetModel.js";
 import CustomError from "../../../utils/customError.js";
 import followingModel from "./../../../models/followModels/following.js";
+import { trackTweetView } from "../../../service/analyticsService.js";
 
 async function randomTweets(lon, lat, user, page, limit, distance) {
   const { interest } = user;
@@ -141,6 +142,11 @@ const getTweets = handelAsyncFunction(async (req, res) => {
 
       tweetModel.countDocuments({ postedBy: businessId }),
     ]);
+
+    // Track views for each tweet
+    for (const tweet of tweets) {
+      await trackTweetView(businessId, tweet._id);
+    }
 
     return res.status(200).json({
       status: "success",

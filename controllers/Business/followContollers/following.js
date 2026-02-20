@@ -1,6 +1,7 @@
 import asyncHandler from "./../../../utils/asyncFunctionHandler.js";
 import followingModel from "../../../models/followModels/following.js";
 import followersModel from "./../../../models/followModels/followers.js";
+import { trackFollowAction } from "../../../service/analyticsService.js";
 
 const following = asyncHandler(async (req, res, next) => { 
   const { businessId } = req.params;
@@ -17,6 +18,9 @@ const following = asyncHandler(async (req, res, next) => {
     { $addToSet: { followers: userId } },
     { new: true, upsert: true }
   );
+
+  // Track follow analytics
+  await trackFollowAction(businessId, true);
 
   res.status(201).json({
     status: "success",
