@@ -58,7 +58,7 @@ const updateUserProfile = handelAsyncFunction(async (req, res, next) => {
           );
         }
       }
-    }
+    } 
 
     //Upload new image
     const uploadResult = await uploadToCloud([req.file]);

@@ -7,5 +7,4 @@ const  supabaseClient =  createClient(
 
 
 
-
 export default supabaseClient;

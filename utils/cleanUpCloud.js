@@ -9,7 +9,7 @@ function extractFilePath(url) {
   if (!url) return null;
 
   try {
-    const marker = "/object/public/NearGo/";
+    const marker = `/object/public/${process.env.SUPABASE_BUCKET}/`;
     const index = url.indexOf(marker);
 
     if (index === -1) return null;
@@ -43,7 +43,7 @@ async function cleanUpCloud(urls) {
 
 
   const { error } = await supabaseClient.storage
-    .from("NearGo")
+    .from(process.env.SUPABASE_BUCKET)
     .remove(fileNames);
 
   if (error) {

@@ -13,19 +13,20 @@ async function uploadToCloud(files) {
 
       // Upload to the "media" bucket
       const { data, error } = await supabase.storage
-        .from("NearGo")
+        .from(process.env.SUPABASE_BUCKET)
         .upload(fileName, file.buffer, {
           contentType: file.mimetype,
           upsert: false,
-        });
+        }); 
 
       if (error) {
+        console.log(error)
         return null; // Skip failed uploads
       }
 
       // Create public URL for the uploaded file
         const { data: publicData } = supabase.storage
-          .from("NearGo")
+          .from(process.env.SUPABASE_BUCKET)
           .getPublicUrl(fileName);
 
       return {
