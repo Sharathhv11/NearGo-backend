@@ -125,7 +125,7 @@ BUSINESS_MEDIA_UPLOAD_LIMIT_PAID=10
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/NearGo-backend.git
+git clone https://github.com/Sharathhv11/NearGo-backend.git
 cd NearGo-backend
 
 # 2. Install dependencies
